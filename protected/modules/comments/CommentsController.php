@@ -9,9 +9,9 @@ class CommentsController extends BaseController{
 
        function  __construct($registry, $params)
 	   {
-            $this->tb = "comments";
-			$this->registry = $registry;
 			parent::__construct($registry, $params);
+			$this->tb = "comments";
+			$this->registry = $registry;
        }
 
        public function indexAction($id, $db)

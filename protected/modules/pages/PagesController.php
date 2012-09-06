@@ -9,9 +9,9 @@ class PagesController extends BaseController{
 
        function  __construct($registry, $params)
 	   {
-            $this->tb = "pages";
-			$this->registry = $registry;
 			parent::__construct($registry, $params);
+			$this->tb = "pages";
+			$this->registry = $registry;
        }
 
        public function indexAction()

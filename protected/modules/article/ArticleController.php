@@ -9,9 +9,9 @@ class ArticleController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "article";
 		$this->registry = $registry;
-		parent::__construct($registry, $params);
 	}
 	
 	public function indexAction()

@@ -9,6 +9,7 @@ class ProductController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "product";
 		$this->name = "Товары";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
@@ -17,8 +18,6 @@ class ProductController extends BaseController{
         $this->width=202;
         $this->height=130;
 		$this->registry = $registry;
-		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()

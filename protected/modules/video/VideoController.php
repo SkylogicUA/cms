@@ -9,9 +9,10 @@ class VideoController extends BaseController{
 
        function  __construct($registry, $params)
 	   {
-            $this->tb = "video";
-			$this->registry = $registry;
 			parent::__construct($registry, $params);
+			$this->tb = "video";
+			$this->registry = $registry;
+			
        }
 
        public function indexAction()

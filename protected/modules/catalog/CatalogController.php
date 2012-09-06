@@ -9,6 +9,7 @@ class CatalogController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "catalog";
 		$this->name = "Каталог";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
@@ -17,7 +18,6 @@ class CatalogController extends BaseController{
 		$this->tb_lang_p = $this->key_lang.'_'.$this->tb_p;
 		
 		$this->registry = $registry;
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()

@@ -9,14 +9,13 @@ class ProductController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "product";
 		$this->name = "Товары";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
         $this->tb_cat=$this->key_lang.'_catalog';
 		$this->tb_photo=$this->key_lang.'_product_photo';
 		$this->registry = $registry;
-		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()

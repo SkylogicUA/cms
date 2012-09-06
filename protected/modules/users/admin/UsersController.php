@@ -9,11 +9,11 @@ class UsersController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "users";
 		$this->name = "Пользователи";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
 		$this->registry = $registry;
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()

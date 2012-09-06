@@ -9,11 +9,11 @@ class MetaController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "meta_data";
 		$this->name = "Мета-данные";
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()
@@ -88,8 +88,7 @@ class MetaController extends BaseController{
 		$message='';
 		if(isset($_POST['active'], $_POST['url'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['url']!="")
 		{
-			if($_POST['url']=='')$url = translit($_POST['name']);
-			else $url = translit($_POST['url']);
+			$url = $_POST['url'];
 
 			$param = array($_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['active']);
 			$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `title`=?, `keywords`=?, `description`=?, `body`=?, `active`=?", $param);
@@ -113,8 +112,7 @@ class MetaController extends BaseController{
 				{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
-						if($_POST['url'][$i]=='')$url = translit($_POST['name'][$i]);
-						else $url = $_POST['url'][$i];
+						$url = $_POST['url'][$i];
 						//echo $_POST['name'][$i].'<br>';
 						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
 						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);

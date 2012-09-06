@@ -9,12 +9,12 @@ class OrdersController extends BaseController{
 
     function  __construct($registry, $params)
     {
+		parent::__construct($registry, $params);
         $this->tb = "orders";
 		$this->tb_b = "bascket";
 		$this->tb_p = "product";
 		$this->tb_p_lang = $this->key_lang.'_product';
         $this->registry = $registry;
-        parent::__construct($registry, $params);
     }
 
     public function indexAction()
