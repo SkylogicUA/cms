@@ -1,6 +1,6 @@
 <?php
 /*
- * вывод каталога компаний и их данных
+ * вывод каталога компаний и их данных llllllllllllllllll
  */
 
 class LanguageController extends BaseController{
