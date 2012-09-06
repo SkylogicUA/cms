@@ -41,14 +41,43 @@ class ProductController extends BaseController{
 										  ,array($this->params['product'], 1));
 		if(!$vars['product'])return Router::act('error', $this->registry);										  
 		
+		
+
+		$q="SELECT
+                tb.*,
+				tb.price,
+				tb.discount,
+                tb2.name,
+				tb2.body_m,
+				tb3.catalog_id,
+				tb4.status_id
+				
+             FROM product tb
+
+				LEFT JOIN ".$this->key_lang."_product tb2
+                ON tb2.product_id=tb.id
+
+                LEFT JOIN product_catalog tb3
+                ON tb3.product_id=tb.id
+				
+				LEFT JOIN product_status_set tb4
+                ON tb4.product_id=tb.id
+
+             WHERE tb.active='1' AND tb3.catalog_id=? AND tb3.product_id!='{$vars['product']['id']}'
+             GROUP BY tb.id
+             ORDER BY rand()
+			 LIMIT 6";
+		$vars['other'] = $this->db->rows($q ,array($vars['product']['catalog_id']));
+		
+		
 		///////More photo
-		/*$vars['photo'] = $this->db->rows("SELECT * 
+		$vars['photo'] = $this->db->rows("SELECT * 
 										  FROM `product_photo` tb
 										   LEFT JOIN `".$this->tb_photo."` tb2
 										   ON tb.id=tb2.photo_id
 										  WHERE tb.product_id=? AND tb.active=?
 										  ORDER BY tb.`sort` asc
-										  ", array($vars['product']['id'], 1));*/
+										  ", array($vars['product']['id'], 1));
 
 		$data['breadcrumbs'] = $this->getBreadCat($vars['product']['catalog_id'], $vars['product']['name']);
 		$data['open_link'] = $vars['product']['catalog_id'];

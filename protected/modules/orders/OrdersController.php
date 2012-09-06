@@ -119,7 +119,7 @@ class OrdersController extends BaseController{
 															start_date=?,
 															active_email=?", 
 					array($_POST['name'], $_POST['email'], md5($pass), 1, $_POST['phone'], $_POST['address'], $_POST['post_index'], $_POST['city'], $start_date, $code));
-					$text="Вы зарегистрировались на сайте {$_SERVER['HTTP_HOST']}.<br /><br />
+					/*$text="Вы зарегистрировались на сайте {$_SERVER['HTTP_HOST']}.<br /><br />
 	
 							Для завершения регистрации перейдите по адресу<br />
 							<a href=\"http://{$_SERVER['HTTP_HOST']}/users/active/code/$code\" target=\"_blank\">http://{$_SERVER['HTTP_HOST']}/users/active/code/$code</a><br /><br />
@@ -137,7 +137,7 @@ class OrdersController extends BaseController{
 						"Вы зарегистрировались на сайте ".$_SERVER['HTTP_HOST'], // тема письма
 						$text // текст письма
 						);//echo $text;
-									
+					*/
 					$vars['user_info'] = $this->db->row("SELECT id FROM users WHERE email=?", array($_POST['email']));
 					$user_id = $vars['user_info']['id'];
 				}

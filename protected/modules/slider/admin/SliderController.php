@@ -14,8 +14,8 @@ class SliderController extends BaseController{
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
 		$this->registry = $registry;
 
-        $this->width = 472;
-        $this->height = 260;
+        $this->width = 666;
+        $this->height = 253;
 
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
 		parent::__construct($registry, $params);

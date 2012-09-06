@@ -1,18 +1,20 @@
 <?
 	$dir=createDir($row['id']);
-	if(file_exists($dir[0]."{$row['id']}_s.jpg"))$src="/".$dir[0]."{$row['id']}_s.jpg";
-	else $src="/files/default.jpg";
+	if(file_exists($dir[0]."{$row['id']}_s.jpg"))$src='<a title="'.$row['name'].'" href="/'.$dir[0].$row['id'].'.jpg">
+														<img alt="'.$row['name'].'" title="'.$row['name'].'" src="/'.$dir[0].$row['id'].'_s.jpg" /><br />
+													</a>';
+	else $src='<img alt="" src="/files/default.jpg" />';
 	
 	$price=viewPrice($row['price'], $row['discount']);
 
-/*	if($row['discount']!=0)
+	/*if($row['discount']!=0)
 	{
 		$discount="<div class='discount'>{$row['discount']}%</div>";
 		$price=viewPrice($row['price'], $_SESSION['currency'], $row['discount']);
 	}
 	else $discount='';*/
 	
-	if($row['status_id']==1)$status='<span class="status">Акция</span>';
+	if($row['cnt']==NULL||$row['cnt']==0)$status='<span class="status"><img src="/tpl/column1/images/stock.png" alt="" /></span>';
 	else $status='';
 
 	if($i==2)
@@ -23,15 +25,15 @@
 	else $style='';
 ?>
     <div class="product" <?=$style?>>
+		<?=$status?>
 		<div class="photo_product">
-			<a title="<?=$row['name']?>" href="/product/<?=$row['url']?>">
-				<img alt="<?=$row['name']?>" title="<?=$row['name']?>" src="<?=$src?>" /><br />
-			</a>
+			<a href="/product/<?=$row['url']?>"><img src="/tpl/column1/images/photo_bg.png" class="border" alt="" /></a>
+			<?=$src?>
+			
 		</div>		
 		<div class="info_product">
-			<div class="name_product"><a title="<?=$row['name']?>" href="/product/<?=$row['url']?>"><?=$row['name']?></a></div>
-			<?=$status?>
-			<div class="price"><?=$price['price']?></div>
-			<button class="buy" name="<?=$row['id']?>" type="button">Купить!</button>
+			<div class="name_product"><a href="/product/<?=$row['url']?>"><?=$row['name']?></a></div>
+			
 		</div>	
+		<div class="clear"></div>
 	</div>

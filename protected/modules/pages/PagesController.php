@@ -20,13 +20,12 @@ class PagesController extends BaseController{
            $settings = Registry::get('user_settings');
            $vars['translate'] = $this->translation;
            $vars['body'] = $this->getPage($this->params['topic']);
-           if(!$vars['body'])return Router::act('error', $this->registry);
+           if(!isset($vars['body']['form']))return Router::act('error', $this->registry);
 
            if($vars['body']['form']==1)$vars['form'] = $view->Render('feedback.phtml',	$vars);
 		   elseif($vars['body']['form']==2)
 		   {
 			   $vars['type_comment'] = $vars['body']['type'];
-			   $vars['id'] = $vars['body']['id'];
 			   $vars['comments'] = $this->db->rows("SELECT * FROM `comments` WHERE content_id=? AND active=? AND type=? ORDER  BY date DESC", array($vars['body']['id'], 1, $vars['type_comment']));
 			   $vars['form'] = $view->Render('comments.phtml',	$vars);
 			   $data['styles'] = array('comments.css');

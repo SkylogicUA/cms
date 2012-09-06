@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	
 	///////////////Sort
 	$(".tb_sort").tableDnD({
 		onDragClass:"hover"
@@ -69,6 +70,18 @@ $(document).ready(function(){
             }
         });
     });
+	
+	$('#addprice').live('click',function()
+    {
+        var id=$("input[name=id]").val();
+        var dataString = 'id='+id;
+        $.ajax({type:"POST",url:"/ajaxadmin/addprice",dataType:'json', data:dataString,cache:false,success:
+            function(data)
+            {
+            	$('#price_tb').html(data.content);
+            }
+        });
+    });
 });
 
 function sortA()
@@ -77,22 +90,4 @@ function sortA()
 	var arr=$(".tb_sort").tableDnDSerialize();
 	var dataString = 'arr='+arr+'&tb='+tb;//alert(dataString);
 	$.ajax({type: "POST",url: "/ajaxadmin/sort",dataType:'json',data: dataString,cache: false,success:function(data){$('#message').html(data.message);autoHide();}});
-}
-
-////Add comments
-function addComment(id)
-{
-    var name = $("#name_form").val();
-    var message = $("#text_form").val();
-	var photo = '';
-	var subb = $("input[name=id]").val();
-    var dataString = 'id='+id+'&name='+name+'&message='+message+'&photo='+photo+'&sub='+subb;
-    $.ajax({type: "POST",url: "/ajaxadmin/addcomment",dataType:'json',data: dataString,cache: false,success: 
-	function(data){
-		$("#input").html(data.message);//alert(data.message+'asda');
-		$("#answers").html(data.content);
-		$("#name_form").val('');
-		$("#text_form").val('');
-	}});
-    return false;
 }

@@ -78,7 +78,7 @@ class MenuController extends BaseController{
 	private function add()
 	{
 		$message='';
-		if(isset($_POST['sub'], $_POST['active'], $_POST['url'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['name']!="")
+		if(isset($_POST['sub'], $_POST['form'], $_POST['active'], $_POST['url'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['name']!="")
 		{
 			if($_POST['url']=='')$url = translit($_POST['name']);
 			else $url = translit($_POST['url']);

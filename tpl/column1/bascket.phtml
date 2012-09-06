@@ -1,6 +1,4 @@
-<?
-	echo'<img src="/tpl/column1/images/bascket.png" alt="" />';
-	echo'Товаров: '.$vars['count'].' шт.<br />';
-	echo 'На сумму '.$vars['total'];
-	//echo'<a href="/orders">'.$vars['translate']['to_order'].'</a>';
-?>
+<div id="check_total">
+	<a href="/orders/all">В корзине товаров <?=$vars['count']?><br />
+	К оплате: <?=$vars['total']?></a>
+</div>

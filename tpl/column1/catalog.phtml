@@ -1,7 +1,7 @@
 <?
-	echo '<h2 class="title">'.$vars['curr_cat']['name'].'</h2>';
+	//echo '<h2 class="title">'.$vars['curr_cat']['name'].'</h2>';
 	if(isset($vars['curr_cat']['body']))echo htmlspecialchars_decode($vars['curr_cat']['body']);
-	if(isset($vars['sub'])&&count($vars['sub'])!=0)
+	/*if(isset($vars['sub'])&&count($vars['sub'])!=0)
 	{
 		$i=0;
 		foreach($vars['sub'] as $row)
@@ -16,7 +16,7 @@
 			$i++;
 		}
 	}
-	else{
+	else{*/
 		$i=0;
 		foreach($vars['product'] as $row)
 		{
@@ -24,5 +24,5 @@
 			$i++;
 		}
 		echo $vars['paging'];
-	}
+
 ?>

@@ -1,19 +1,16 @@
 $.router(/^admin=(.+)$/, function(m, user){ 
-		 
-		//$("#ajax_loading_box").show(); 
-		$.ajax({type: "POST",url: "/admin/"+user,  
-			cache: false, 
-			data: {},
-			success: function(html){
-				 
-				$('#Router-ContentMy').html(html);	
-				//$("#ajax_loading_box").hide();
-				
-			}});
+	//$("#ajax_loading_box").show(); 
+	$.ajax({type: "POST",url: "/admin/"+user,  
+		cache: false, 
+		data: {},
+		success: function(html){
+			$('#Router-ContentMy').html(html);	
+			//$("#ajax_loading_box").hide();
+	}});
 }) 
 
 $(document).ready(function(){
-	$("div").parent(".lBlock")
+	$("div").parent(".lBlock");
 	autoHide();
 
     $('#read_all').live('click', function(){
@@ -57,7 +54,6 @@ $(document).ready(function(){
 		var id = $(this).attr('rev');
 		$('#'+id).focus();
 	});
-	
 	
 	$('.cm-save-and-close').click(function(){
 		var action = '/admin/'+$('#action').val();
@@ -125,11 +121,8 @@ function info_box(typeM, message){ //error information warning success
 		message: message,
 		type: typeM
 		/*
-		
 		'duration': 0, // display duration
-		
 		'autoClose' : false,
-		
 		*/
 	}); 		
 }

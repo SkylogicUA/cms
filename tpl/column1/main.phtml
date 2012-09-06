@@ -1,45 +1,34 @@
 <?
 	echo $vars['slider'];
-	if(count($vars['product_n'])!=0)
+	$i=0;
+	foreach($vars['catalog'] as $row)
 	{
-		echo'<div class="start_title">'.$vars['translate']['novetly'].'</div>';
+		if($i==2)
+		{
+			$i=-1;
+			$style=' style="margin-right:0;"';
+		}
+		else $style='';
+		echo'<div class="cat" '.$style.'>
+				<a href="/catalog/'.$row['url'].'">
+					<img src="/tpl/column1/images/cat_bg.png" class="cat_border">
+					<img src="/files/catalog/'.$row['id'].'_s.jpg">
+					<div class="name">'.$row['name'].'</div>
+				</a>
+			 </div>';
+		$i++;
+	}
+	echo '<div class="clear"></div><div style="margin:25px 0 35px 0;">'.htmlspecialchars_decode($vars['top_ban']['body']).'</div>';
+	if(count($vars['product_h'])!=0)
+	{
+		echo'<div class="title">'.$vars['translate']['hot_offers'].'</div>';
 		$i=0;
-		foreach($vars['product_n'] as $row)
+		foreach($vars['product_h'] as $row)
 		{
 			include "product.phtml";
 			$i++;
 		}
 		echo'<div class="clear"></div>';
 	}
-	
-	echo '<div style="margin:25px 0 35px 0;">'.htmlspecialchars_decode($vars['bot_ban']['body']).'</div>';
-	
-	if(count($vars['product_t'])!=0)
-	{
-		echo'<div class="start_title">'.$vars['translate']['top-sellers'].'</div>';
-		$i=0;
-		foreach($vars['product_t'] as $row)
-		{
-			include "product.phtml";
-			$i++;
-		}
-		echo'<div class="clear"></div>';
-	}
-	
-	echo '<div style="margin:25px 0 35px 0;">'.htmlspecialchars_decode($vars['top_ban']['body']).'</div>';
-	
-	if(count($vars['product_r'])!=0)
-	{
-		echo'<div class="start_title">'.$vars['translate']['recommend'].'</div>';
-		$i=0;
-		foreach($vars['product_r'] as $row)
-		{
-			include "product.phtml";
-			$i++;
-		}
-		echo'<div class="clear"></div>';
-	}
-    echo htmlspecialchars_decode($vars['body']['body']);
+
 ?>
-<script type="text/javascript" src="/js/slider.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/slider.css" media="screen" />

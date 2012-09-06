@@ -34,27 +34,27 @@
                             <input type="text" class="input-text-medium" value="" size="55" name="discount" style="width:30px;" /> %
                         </div>
 						<div class="form-field">
+                            <label for="page">На складе:</label>
+                            <input type="text" class="input-text-medium" value="1" size="55" name="cnt" style="width:30px;" />
+                        </div>
+						<div class="form-field">
 							<label for="page_descr">Описание:</label>
 							
 							<?=$this->showEditor('body', '');?>
 						</div>
 						<div class="form-field">
-							<label for="page_descr">Характеристики:</label>
-							<textarea name="body_m" id="elm2" rows="20" cols="94"></textarea>
-						</div>
-						<div class="form-field">
 							<label class="cm-required">Статус:</label>
 							<div class="select-field">
-								<input type="radio" class="radio" value="0" id="page_data_0_a" name="active" checked="checked" />
+								<input type="radio" class="radio" value="1" id="page_data_0_a" name="active" checked="checked" />
 								<label for="page_data_0_a">Вкл.</label>
-								<input type="radio" class="radio" value="1" id="page_data_0_d" name="active" />
+								<input type="radio" class="radio" value="0" id="page_data_0_d" name="active" />
 								<label for="page_data_0_d">Выкл.</label>
 							</div>
 						</div>
 					</fieldset>
 					<fieldset>
 						<h2 class="subheader">Каталог</h2>
-						<div style="margin-left:15px;">
+						<div style="margin-left:15px; max-height:300px; overflow:auto;">
                             <?php
                                 foreach($vars['catalog'] as $row)
                                 {
@@ -69,6 +69,14 @@
 											{
 												echo'&nbsp;&nbsp;&nbsp;&nbsp;<input name="cat_id[]" type="checkbox" id="cat'.$row2['id'].'" value="'.$row2['id'].'">
 													 <label for="cat'.$row2['id'].'">'.$row2['name'].'</label><br />';
+												
+												foreach($vars['catalog'] as $row3)
+												{
+													if($row2['id']==$row3['sub'])
+													{
+														echo'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="cat_id[]" type="checkbox" id="cat'.$row3['id'].'" value="'.$row3['id'].'"><label for="cat'.$row3['id'].'">'.$row3['name'].'</label><br />';
+													}
+												}	 
 											}
 										}
 									}
@@ -90,13 +98,20 @@
 						</div>
 					</fieldset>
                     <fieldset>
-                        <h2 class="subheader">Обложка</h2>
+                       <h2 class="subheader">Обложка</h2>
                         <div class="form-field">
                             <?php
-                            	$src="/tpl/admin/images/no_image.gif";
+								/*
+								if(file_exists($dir[0]."{$vars['edit']['id']}_s.jpg"))$src="/".$dir[0]."{$vars['edit']['id']}_s.jpg";
+								else $src="/tpl/admin/images/no_image.gif";<label for="page_page_title"><img src="<?=$src?>?<?=date("Y-m-d-H-i-s");?>" alt="" style="max-width: 150px;" /></label>
+								<input type="file" name="photo" />*/
+								$path="files/tmp/";
+								$vars['path']=$path;
+								$vars['image_id']=mktime();
+								$_SESSION['tmp_image'] = $vars['image_id'];
+								include $_SERVER['DOCUMENT_ROOT']."/tpl/admin/upload_img.phtml";
                             ?>
-                            <label for="page_page_title"><img src="<?=$src?>" alt="" style="max-width: 150px;" /></label>
-                            <input type="file" name="photo" />
+                            <input type="hidden" name="tmp_image" value="<?=$vars['image_id']?>" />
                         </div>
                     </fieldset>
 					<fieldset>

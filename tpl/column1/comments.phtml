@@ -28,7 +28,7 @@
 	<div id="photo_comment"><img src="<?=$src?>" /></div>
     <div id="comment_form">
         
-        <form method="post" action="" id="formID" onsubmit="return addComment(<?=$vars['news']['id']?>, '<?=$vars['type_comment']?>');">
+        <form method="post" action="" id="formID" onsubmit="return addComment(<?=$vars['id']?>, '<?=$vars['type_comment']?>');">
             <input type="text" value="<?=$vars['translate']['name']?>" id="name_form" class="validate[required]" /><br />
 			<input type="hidden" id="photo_comment" value="" />
             <textarea name="" id="text_form" cols="30" rows="10" class="validate[required]"><?=$vars['translate']['message']?>...</textarea><br />
@@ -54,40 +54,18 @@
 	echo'<div class="clear"></div><br />';
     foreach($vars['comments'] as $row)
     {
-		if($row['sub']==0)
-		{
-			if($row['photo']!='')$src=$row['photo'];
-			else $src='/files/default.gif';
-			echo'
-			<div class="comment_record">
-				<div class="photo_comment"><img src="'.$src.'" width="50" /></div>
-				<div class="info_comment">
-					<div class="title_comment">'.$row['author'].'</div>
-					<div class="text_comment">'.$row['text'].'</div>
-					<div class="date_comment">'.$this->date_view($row['date'], "dd.mm.YY, hh:ii").'</div>
-				</div>
-				<div class="clear"></div>
-			';
-			foreach($vars['comments'] as $row2)
-    		{
-				if($row['id']==$row2['sub'])
-				{
-					if($row2['photo']!='')$src=$row2['photo'];
-					else $src='/files/default.gif';
-					echo'
-					<div class="comment_record" style="margin-left:60px;">
-						<div class="photo_comment"><img src="'.$src.'" width="50" /></div>
-						<div class="info_comment" style="width:570px;">
-							<div class="title_comment">'.$row2['author'].'</div>
-							<div class="text_comment">'.$row2['text'].'</div>
-							<div class="date_comment">'.$this->date_view($row2['date'], "dd.mm.YY, hh:ii").'</div>
-						</div>
-						<div class="clear"></div>
-					</div>';
-				}
-			}
-			echo'</div>';
-		}
+		if($row['photo']!='')$src=$row['photo'];
+		else $src='/files/default.gif';
+        echo'
+		<div class="comment_record">
+			<div class="photo_comment"><img src="'.$src.'" width="50" /></div>
+			<div class="info_comment">
+				<div class="title_comment">'.$row['author'].'</div>
+				<div class="text_comment">'.$row['text'].'</div>
+				<div class="date_comment">'.$this->date_view($row['date'], "dd.mm.YY, hh:ii").'</div>
+			</div>
+			<div class="clear"></div>
+		</div>';
     }
     ?>
 </div>

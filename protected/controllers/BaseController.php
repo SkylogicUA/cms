@@ -95,12 +95,16 @@ class BaseController{
 		}
 		else//////Сайт
         {	
-            $styles=array_merge(array('style.css', 'fancy.css', 'sticker.css', 'menu.css'), $param['styles']);
+            $styles=array_merge(array('style.css', 'fancy.css', 'sticker.css', 'menu.css', 'skin.css'), $param['styles']);
             $scripts=array_merge(array('jquery-1.7.1.min.js', 
 									   'base.js', 
 									   'ajax.js', 
 									   'jquery.stickr.min.js',
-									   'jquery.fancybox-1.3.4.pack.js'), 
+									   'jquery.fancybox-1.3.4.pack.js',
+									   'cufon-yui.js',
+									   'peterburg_italic.font.js',
+									   'jquery.jcarousel.min.js'
+									   ), 
 									   $param['scripts']);
             $data['styles'] = $view->Load($styles, 'styles');
             $data['scripts'] = $view->Load($scripts, 'scripts');
@@ -116,7 +120,8 @@ class BaseController{
 									 ON tb1.id=tb2.menu_id
 									 WHERE tb1.active=?
 									 ORDER BY tb1.`sort` ASC", array(1));
-            $data['menu'] = $view->Render('menu.phtml',	array_merge(array('menu'=>$menu, 'translate'=>$data['translate'])));
+			
+            $data['menu'] = $view->Render('menu.phtml',	array_merge(array('menu'=>$menu, 'translate'=>$data['translate'], 'phone'=>$this->getBlock(1))));
 			#!End Main menu 
 			
 			#Start Left menu
@@ -136,19 +141,19 @@ class BaseController{
 				$open_link = $this->getOpenLink($this->params['catalog']);
 			}
 			
-            $data['top_menu'] = $view->Render('top_menu.phtml', array_merge($param, array('menu'=>$menu, 'open_link'=>$open_link, 'translate'=>$data['translate'])));
 			$data['left_menu'] = $view->Render('left_menu.phtml', array_merge($param, array('menu'=>$menu, 'open_link'=>$open_link, 'translate'=>$data['translate'])));
 			#!End Left menu 
-
+			
 			#Start Info blocks
-            $data['phone'] = $this->getBlock(1);
+            
 			$data['recomand'] = $this->getBlock(3);
+			
 			$data['bonus'] = $this->getBlock(4);
 			$data['brands'] = $this->getBlock(5);
 			#!End Info blocks
 			
 			#Start News blocks
-			$news = $this->db->rows("SELECT tb1.*, tb2.name 
+			$news = $this->db->rows("SELECT tb1.*, tb2.name, tb2.body_m 
 									 FROM `news` tb1
 									 LEFT JOIN ".$this->key_lang."_news tb2
 									 ON tb1.id=tb2.news_id
@@ -157,6 +162,8 @@ class BaseController{
 			$data['news'] = $view->Render('news_block.phtml', array_merge($param, array('news'=>$news, 'translate'=>$data['translate'])));
 			#!End News blocks
 			
+			$data['slider2'] = $view->Render('slider2.phtml', array_merge($param, array('translate'=>$data['translate'])));
+			$data['feedback'] = $view->Render('feedback.phtml', array_merge($param, array('translate'=>$data['translate'])));
 			//echo $this->validate('+3(123)7291231231', 'phone');
             if(!isset($data['slider']))
 			{

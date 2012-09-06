@@ -137,7 +137,7 @@ class AjaxAdminController extends BaseController{
 				$this->db->query("INSERT INTO `$tb` SET `name`=?, `photo_id`=?", $param);
 			}
 			$dir=createDir($_REQUEST['id']);
-			resizeImage($tempFile, $dir[1].$insert_id.".jpg", $dir[1].$insert_id."_s.jpg", 70, 47);
+			resizeImage($tempFile, $dir[1].$insert_id.".jpg", $dir[1].$insert_id."_s.jpg", 146, 94);
 			
 			switch ($_FILES['Filedata']['error'])
 			{     
@@ -468,48 +468,36 @@ class AjaxAdminController extends BaseController{
     }
 	
 	
-	function addcommentAction()
+	
+	function addpriceAction()
     {
-		$view = new View($this->registry);
-		if(isset($_POST['name'],$_POST['message'],$_POST['id'],$_POST['sub']))
+		if(isset($_POST['id']))
 		{
-			//$_POST['sub']=0;
-			$name=$_POST['name'];
-			$pos = strpos($name, "<a");
-			if($pos === false&&$_POST['name']!=""&&$_POST['message']!="")
-			{
-				$row = $this->db->row("SELECT type, content_id FROM comments WHERE `id`=?", array($_POST['sub']));
-				$date=date("Y-m-d H:i:s");
-				$query = "INSERT INTO `comments` SET `sub`=?, `author`=?, `text`=?, `content_id`=?, `type`=?, `date`=?, `session_id`=?, `language`=?, active=?";
-				$this->db->query($query, array($_POST['sub'], $_POST['name'], $_POST['message'], $row['content_id'], $row['type'], $date, session_id(), $this->key_lang, 1));
-				$data['message'] = "<div class='message'>".$this->translation['comment_add']."!</div>";
-			}
-		
-			$res = $this->db->rows("SELECT * FROM comments WHERE sub=? ORDER BY date DESC", array($_POST['sub']));	
 			$data=array();
+			$this->db->query("INSERT INTO price SET product_id=?", array($_POST['id']));
+			$res = $this->db->rows("SELECT * FROM price WHERE product_id=? ORDER BY id DESC", array($_POST['id']));	
+			
 			$data['content']='
-				<tr>
-					<th width="50">ID</th>
-					<th width="10%">Дата добавления</th>
-					<th width="10%">Автор</th>
-					<th>Комментарий</th>
-					<th width="5%">&nbsp;</th>
+				<tr class="noDrop">
+					<th>Цена</th>
+					<th>Порция</th>
+					<th>&nbsp;</th>
 				</tr>';
 			foreach($res as $row)
 			{
 				$data['content'].='<tr>
-						<td><span>'.$row['id'].'</span></td>
-						<td>'.$view->date_view($row['date'], "dd/mm/YY, hh:ii").'</td>
-						<td>'.$row['author'].'</td>
-						<td>'.$row['text'].'</td>
+						<td><input type="text" name="price_price[]" value="'.$row['price'].'"  style="width:100px;" /></td>
+						<td><input type="text" name="price_name[]" value="'.$row['weight'].'"  style="width:100px;" /></td>
+						
 						<td width="10%">
 							<input type="hidden" name="product_id[]" value="'.$row['id'].'" />
 							<ul class="cm-tools-list tools-list">
-								<li><a href="/admin/comments/edit/'.$row['sub'].'/delanswer/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
+								<li><a href="/admin/product/edit/'.$_POST['id'].'/delprice/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
 							</ul>
 						</td>
 					</tr>';
 			}
+			
 			return json_encode($data);
 		}
     }

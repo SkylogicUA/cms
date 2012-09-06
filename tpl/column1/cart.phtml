@@ -27,7 +27,7 @@ $(document).ready(function(){
 				$summa2+=$price['cur_price']*$row['amount'];
 
 				echo"<tr>
-						<td style='text-align:left;'>{$row['name']}</td>
+						<td style='text-align:left;'><a href='/product/{$row['url']}'>{$row['name']}</a></td>
 						<td><input type='text' value='{$row['amount']}' name='amount[]' class='amount' />
 										   <input type='hidden' value='{$row['cart_id']}' name='id[]' />
 						</td>

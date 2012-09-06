@@ -50,12 +50,12 @@
                             <input type="text" class="input-text-medium" value="<?=$vars['edit']['discount']?>" size="55" name="discount" style="width:30px;" /> %
                         </div>
 						<div class="form-field">
+                            <label for="page">На складе:</label>
+                            <input type="text" class="input-text-medium" value="<?=$vars['edit']['cnt']?>" size="55" name="cnt" style="width:30px;" />
+                        </div>
+						<div class="form-field">
 							<label for="page_descr">Описание:</label>
 							<?=$this->showEditor('body', $vars['edit']['body']);?>
-						</div>
-						<div class="form-field">
-							<label for="page_descr">Характеристики:</label>
-							<textarea name="body_m" id="elm2" rows="20" cols="94"><?=$vars['edit']['body_m']?></textarea>
 						</div>
 						<div class="form-field">
 							<label class="cm-required">Статус:</label>
@@ -69,7 +69,7 @@
 					</fieldset>
 					<fieldset>
 						<h2 class="subheader">Каталог</h2>
-						<div style="margin-left:15px;">
+						<div style="margin-left:15px; max-height:300px; overflow:auto;">
                             <?php
                                 foreach($vars['catalog'] as $row)
                                 {
@@ -78,12 +78,21 @@
 										echo' <input name="cat_id[]" type="checkbox" id="cat'.$row['id'].'" value="'.$row['id'].'"';
 										if($row['product_id']==$vars['edit']['id'])echo' checked="checked"';echo'><label for="cat'.$row['id'].'">'.$row['name'].'</label><br />';
 										
-										 foreach($vars['catalog'] as $row2)
+										foreach($vars['catalog'] as $row2)
 										{
 											if($row['id']==$row2['sub'])
 											{
 												echo'&nbsp;&nbsp;&nbsp;&nbsp;<input name="cat_id[]" type="checkbox" id="cat'.$row2['id'].'" value="'.$row2['id'].'"';
 												if($row2['product_id']==$vars['edit']['id'])echo' checked="checked"';echo'><label for="cat'.$row2['id'].'">'.$row2['name'].'</label><br />';
+												
+												foreach($vars['catalog'] as $row3)
+												{
+													if($row2['id']==$row3['sub'])
+													{
+														echo'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="cat_id[]" type="checkbox" id="cat'.$row3['id'].'" value="'.$row3['id'].'"';
+														if($row3['product_id']==$vars['edit']['id'])echo' checked="checked"';echo'><label for="cat'.$row3['id'].'">'.$row3['name'].'</label><br />';
+													}
+												}
 											}
 										}
 									}
@@ -150,7 +159,7 @@
                     </fieldset>
 				</div>
 				<!--Images end-->
-				
+
 				<? if(isset($vars['params']))echo $vars['params'];?>
 				
 				<div class="buttons-container cm-toggle-button buttons-bg">

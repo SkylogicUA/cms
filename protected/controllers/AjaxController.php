@@ -40,10 +40,15 @@ class AjaxController extends BaseController{
 	{
 		$currency = $this->currency();
 		$total=0;
-		$res=$this->db->rows("SELECT b.`amount`, b.`price`, p.discount
+		$vars['product'] = $res=$this->db->rows("SELECT b.`amount`, b.`price`, p.discount, p2.name
 							  FROM `bascket` b
+							  
 							  LEFT JOIN product p
 							  ON p.id=b.product_id
+							  
+							  LEFT JOIN ".$this->key_lang."_product p2
+							  ON p.id=p2.product_id
+							  
 							  WHERE b.`session_id`=?", array(session_id()));
 		foreach($res as $row)
 		{
@@ -55,23 +60,21 @@ class AjaxController extends BaseController{
 		$total=formatPrice($total);
 		
 		$view = new View($this->registry);
-		echo $view->Render('bascket.phtml', array('total'=>$total, 'count'=>$count['count'], 'translate'=>$this->translation));
+		echo $view->Render('bascket.phtml', array('total'=>$total, 'count'=>$count['count'], 'translate'=>$this->translation, 'product'=>$vars['product']));
 	}
 	
 	///Add comments
 	function addcommentAction()
     {
-		if(isset($_POST['name'],$_POST['message'],$_POST['id'],$_POST['photo']))
+		if(isset($_POST['name'],$_POST['message'],$_POST['id'],$_POST['type'],$_POST['photo']))
 		{
-			if(!isset($_POST['type']))$_POST['type']='';
-			if(!isset($_POST['sub']))$_POST['sub']=0;
 			$name=$_POST['name'];
 			$pos = strpos($name, "<a");
 			if($pos === false&&$_POST['name']!=""&&$_POST['message']!="")
 			{
 				$date=date("Y-m-d H:i:s");
-				$query = "INSERT INTO `comments` SET `sub`=?, `author`=?, `text`=?, `content_id`=?, `type`=?, `date`=?, `session_id`=?, `language`=?, `photo`=?";
-				$this->db->query($query, array($_POST['sub'], $_POST['name'], $_POST['message'], $_POST['id'], $_POST['type'], $date, session_id(), $this->key_lang, $_POST['photo']));
+				$query = "INSERT INTO `comments` SET `author`=?, `text`=?, `content_id`=?, `type`=?, `date`=?, `session_id`=?, `language`=?, `photo`=?";
+				$this->db->query($query, array($_POST['name'], $_POST['message'], $_POST['id'], $_POST['type'], $date, session_id(), $this->key_lang, $_POST['photo']));
 				echo"<div class='message'>".$this->translation['comment_add']."!</div>";
 			}
 		}
@@ -116,10 +119,11 @@ class AjaxController extends BaseController{
 					"windows-1251", // кодировка письма
 					"Обратная связь: ".$_SERVER['HTTP_HOST'], // тема письма
 					"
-							Имя:{$_POST['name']}<br />
-							E-mail:{$_POST['email']}<br />
-							<br />
-							Сообщение:{$_POST['message']}
+					Имя:{$_POST['name']}<br />
+					E-mail:{$_POST['email']}<br />
+					Телефон:{$_POST['phone']}<br />
+					<br />
+					Сообщение:{$_POST['message']}
 						" // текст письма
 				);
 				$send=1;
@@ -127,6 +131,22 @@ class AjaxController extends BaseController{
 			}
 			$message = array($send, $message);
 			echo json_encode($message);
+		}
+    }
+	
+	
+	///Get price
+    function getpriceAction()
+    {
+		if(isset($_POST['id']))
+		{
+			$select='';
+			$res=$this->db->rows("SELECT * FROM `price` WHERE `product_id`=?", array($_POST['id']));
+			foreach($res as $row)
+			{
+				$select.='<option value="'.$row['id'].'">'.$row['price'].' грн. - '.$row['weight'].'</option>';	
+			}
+			if($select!='')echo'<select id="price'.$_POST['id'].'">'.$select.'</select>';
 		}
     }
 }

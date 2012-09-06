@@ -11,8 +11,8 @@ class NewsController extends BaseController{
 	{
 		$this->tb = "news";
 		$this->name = "Новости";
-		$this->width=230;
-		$this->height=143;
+		$this->width=202;
+		$this->height=130;
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
@@ -45,6 +45,8 @@ class NewsController extends BaseController{
 		
 		$vars['list'] = $this->listView();
 		$view = new View($this->registry);
+		$vars['width'] = $this->width;
+		$vars['height'] = $this->height;
 		$data['styles']=array('timepicker.css');
 		$data['scripts']=array('timepicker.js');
 		$data['content'] = $view->Render('add.phtml', $vars);
@@ -97,6 +99,16 @@ class NewsController extends BaseController{
 				$tb=$lang['language']."_".$this->tb;
 				$param = array($_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body_m'], $_POST['body'], $insert_id);
 				$this->db->query("INSERT INTO `$tb` SET `name`=?, `title`=?, `keywords`=?, `description`=?, `body_m`=?, `body`=?, `".$this->tb."_id`=?", $param);
+			}
+			
+			////Photo
+			if(isset($_POST['tmp_image'])&&file_exists("files/tmp/{$_POST['tmp_image']}.jpg"))
+			{
+				$dir="files/news/";
+				copy("files/tmp/{$_POST['tmp_image']}.jpg", $dir.$insert_id.".jpg");
+				copy("files/tmp/{$_POST['tmp_image']}_s.jpg", $dir.$insert_id."_s.jpg");
+				unlink("files/tmp/{$_POST['tmp_image']}.jpg");
+				unlink("files/tmp/{$_POST['tmp_image']}_s.jpg");
 			}
 			$message.= messageAdmin('Данные успешно добавлены');
 		}

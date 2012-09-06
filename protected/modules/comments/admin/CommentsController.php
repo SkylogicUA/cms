@@ -33,13 +33,8 @@ class CommentsController extends BaseController{
 
 	public function editAction()
 	{
-		$vars['message'] = '';
-		if(isset($this->params['delanswer']))
-		{
-			if($this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=?", array($this->params['delanswer'])))$vars['message'] = messageAdmin('Запись успешно удалена');
-		}
 		//if($vars['message']!='')return Router::act('error');
-		
+		$vars['message'] = '';
 		if(isset($_POST['update']))$vars['message'] = $this->save();
 		
 		$vars['edit'] = $this->db->row("SELECT 
@@ -48,7 +43,7 @@ class CommentsController extends BaseController{
 										WHERE
 											tb.id=?",
 										array($this->params['edit']));
-		$vars['comments'] = $this->db->rows("SELECT * FROM comments WHERE sub=? ORDER BY date DESC", array($this->params['edit']));																		
+		if(isset($this->params['duplicate']))$vars['message'] = $this->duplicate($vars['edit']);								
 		$vars['list'] = $this->listView();
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('edit.phtml', $vars);
@@ -83,24 +78,24 @@ class CommentsController extends BaseController{
 			{
 				for($i=0; $i<=count($_POST['id']) - 1; $i++)
 				{
-					$this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=? OR `sub`=?", array($_POST['id'][$i], $_POST['id'][$i]));
+					$this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=?", array($_POST['id'][$i]));
 				}
 				$message = messageAdmin('Запись успешно удалена');
 			}
 			elseif(isset($this->params['delete'])&& $this->params['delete']!='')
 			{
 				$id = $this->params['delete'];
-				if($this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=? OR `sub`=?", array($id, $id)))$message = messageAdmin('Запись успешно удалена');
+				if($this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=?", array($id)))$message = messageAdmin('Запись успешно удалена');
 			}
 		}
 		return $message;
 	}
 	
-	private function listView()
+	private function listView($WHERE='')
 	{
 		$vars['list'] = $this->db->rows("SELECT tb.*
 										 FROM ".$this->tb." tb
-										 WHERE tb.sub=0	
+										 $WHERE		
 										 ORDER BY tb.`date` DESC");
 		return $vars;
 	}

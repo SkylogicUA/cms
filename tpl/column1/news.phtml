@@ -12,10 +12,10 @@
                 foreach($vars['other'] as $row)
                 {
                     //echo'<div class="news_left"><span>'.$this->printDate($row['data']).'</span></div>';
-                    echo'<div><a href="/news/'.$row['url'].'">'.$row['name'].'</a></div><div class="clear"></div>';
-                    echo''.$row['body_m'].'<br />';
+                    echo'<div><a href="/news/'.$row['url'].'" style="font-size:18px; display:block; margin-bottom:5px;">'.$row['name'].'</a></div><div class="clear"></div>';
+                    echo''.$row['body_m'].'<br /><br />';
                 }
-                echo"</div>";
+                echo"</div><br />";
             }
     }
     else{

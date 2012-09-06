@@ -25,8 +25,9 @@ class CatalogController extends BaseController{
 		$view = new View($this->registry);
 		$vars['message'] = "";
 		$data['bread_crumbs'] = "";
+		$vars['translate'] = $this->translation;///Переводы интерфейса
 		$where="";
-		
+		$vars['curr_cat']['name'] = $vars['translate']['catalog'];
 		#Start onpage
         if(!isset($_SESSION['onpage']))$_SESSION['onpage']=9;
 		elseif(isset($_POST['onpage'])&&$_POST['onpage']==9)$_SESSION['onpage']=9;
@@ -140,6 +141,7 @@ class CatalogController extends BaseController{
                 tb.*,
 				tb.price,
 				tb.discount,
+				tb.cnt,
                 tb2.name,
 				tb2.body_m,
 				tb3.catalog_id,

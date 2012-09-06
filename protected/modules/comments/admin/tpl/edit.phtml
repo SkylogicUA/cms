@@ -34,6 +34,7 @@
 							</div>
 						</div>
 					</fieldset>
+
 				</div>
 				<div class="buttons-container cm-toggle-button buttons-bg">
 					<div class="cm-buttons-floating hidden" style="display: block;">
@@ -50,53 +51,6 @@
 				</div>
 				<input type="hidden" value="<?=$vars['action']?>" id="action" />
 			</form>
-			<div id="input"></div>
-			<form class="cm-form-highlight cm-check-changes" name="page_update_form" method="post" action="" onsubmit="return addComment(<?=$vars['edit']['id']?>);">
-					<fieldset>
-						<h2 class="subheader"> Ответить </h2>
-
-						<div class="form-field">
-							<label class="cm-required" for="page">Автор:</label>
-							<input type="text" class="input-text-large main-input" value="" size="55" id="name_form" />
-						</div>
-                        <div class="form-field">
-                            <label for="page_meta_descr">Комментарий:</label>
-                            <textarea class="input-textarea-long" rows="2" cols="55" id="text_form"></textarea>
-                        </div>
-					</fieldset>
-				</div>
-				<span class="submit-button cm-button-main"><input type="submit" value="Ответить" /></div>
-			</form>
-			<table width="100%" cellspacing="0" cellpadding="0" border="0" class="table table-fixed hidden-inputs" id="answers">
-			<?
-			if(count($vars['comments'])!=0)
-			{
-				echo'
-					<tr>
-						<th width="50">ID</th>
-						<th width="10%">Дата добавления</th>
-						<th width="10%">Автор</th>
-						<th>Комментарий</th>
-						<th width="5%">&nbsp;</th>
-					</tr>';
-				foreach($vars['comments'] as $row)
-				{
-					echo'<tr>
-							<td><span>'.$row['id'].'</span></td>
-							<td>'.$this->date_view($row['date'], "dd/mm/YY, hh:ii").'</td>
-							<td>'.$row['author'].'</td>
-							<td>'.$row['text'].'</td>
-							<td width="10%">
-								<input type="hidden" name="product_id[]" value="'.$row['id'].'" />
-								<ul class="cm-tools-list tools-list">
-									<li><a href="/admin/comments/edit/'.$vars['edit']['id'].'/delanswer/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
-								</ul>
-							</td>
-						</tr>';
-				}
-			}
-			?>
-			</table>
 		</div>
 	</div>
 </div>

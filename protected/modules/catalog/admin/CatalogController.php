@@ -11,8 +11,8 @@ class CatalogController extends BaseController{
 	{
 		$this->tb = "catalog";
 		$this->name = "Каталог";
-		$this->width=228;
-		$this->height=149;
+		$this->width=202;
+		$this->height=170;
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));

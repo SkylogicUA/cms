@@ -62,12 +62,12 @@ class OrdersController extends BaseController{
 		
 		if(isset($_POST['update']))$vars['message'] = $this->save();
 		$vars['status'] = $this->db->rows("SELECT * FROM orders_status");
-		$vars['product'] = $this->db->rows("SELECT * FROM orders_product WHERE orders_id=?", array($this->params['edit']));
+		$vars['product'] = $this->db->rows("SELECT * FROM orders_product WHERE orders_id=?", array($this->params['edit']));//var_info($vars['product']);
 		$vars['catalog'] = $this->db->rows("SELECT tb.id, tb.sub, tb2.name 
 											FROM catalog tb
 											
 											LEFT JOIN ".$this->key_lang."_catalog tb2
-											ON tb.id-tb2.cat_id
+											ON tb.id=tb2.cat_id
 											
 								 			ORDER BY tb.sort ASC");
 		$vars['edit'] = $this->db->row("SELECT 
@@ -88,7 +88,6 @@ class OrdersController extends BaseController{
 		$data['content'] = $view->Render('edit.phtml', $vars);
 		return $this->Render($data);
 	}
-	
 	
 	private function add()
 	{

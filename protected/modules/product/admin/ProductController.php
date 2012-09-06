@@ -14,8 +14,8 @@ class ProductController extends BaseController{
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
         $this->tb_cat=$this->key_lang.'_catalog';
 		$this->tb_photo=$this->key_lang.'_product_photo';
-        $this->width=100;
-        $this->height=100;
+        $this->width=202;
+        $this->height=130;
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
 		parent::__construct($registry, $params);
@@ -81,7 +81,9 @@ class ProductController extends BaseController{
 											  GROUP BY tb.cat_id
 											  ORDER BY tb3.sort ASC");
 		$vars['status'] = $this->db->rows("SELECT * FROM `product_status`");	
-		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");									  
+		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");	
+		$vars['height']=$this->height;	
+		$vars['width']=$this->width;							  
 		$data['content'] = $view->Render('add.phtml', $vars);
 		return $this->Render($data);
 	}
@@ -134,7 +136,7 @@ class ProductController extends BaseController{
 												  ORDER BY tb.sort ASC");
 			$vars['params_set'] = $this->db->rows("SELECT * FROM `params_product` WHERE product_id=?", array($vars['edit']['id']));	
 			$vars['params'] = $view->Render('params.phtml', $vars);								  
-		}								
+		}	
 
 		////Extra photo
         $vars['photo'] = $this->db->rows("SELECT * FROM `product_photo` tb
@@ -190,12 +192,14 @@ class ProductController extends BaseController{
 													`active`=?, 
 													`price`=?, 
 													`discount`=?,
+													`cnt`=?,
 													`code`=?, 
 													`date_add`=?", 
 											   array(0, 
 											   		 $_POST['active'],
 													 $_POST['price'],
 													 $_POST['discount'],
+													 $_POST['cnt'],
 													 $_POST['code'],
 													 date("Y-m-d H:i:s")));
 													 
@@ -203,8 +207,8 @@ class ProductController extends BaseController{
 			foreach($this->language as $lang)
 			{
 				$tb=$lang['language']."_".$this->tb;
-				$param = array($_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['body_m'], $insert_id);
-				$this->db->query("INSERT INTO `$tb` SET `name`=?, `title`=?, `keywords`=?, `description`=?, `body`=?, `body_m`=?, `product_id`=?", $param);
+				$param = array($_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $insert_id);
+				$this->db->query("INSERT INTO `$tb` SET `name`=?, `title`=?, `keywords`=?, `description`=?, `body`=?, `product_id`=?", $param);
 			}										 
 			$message = $this->checkUrl($this->tb, $url, $insert_id);
 			
@@ -233,10 +237,13 @@ class ProductController extends BaseController{
 			}
 			
 			////Photo
-			if(isset($_FILES['photo']['tmp_name'])&&$_FILES['photo']['tmp_name']!="")
+			if(isset($_POST['tmp_image'])&&file_exists("files/tmp/{$_POST['tmp_image']}.jpg"))
 			{
 				$dir=createDir($insert_id);
-				resizeImage($_FILES['photo']['tmp_name'], $dir['0'].$insert_id.".jpg", $dir['0'].$insert_id."_s.jpg", $this->width, $this->height);
+				copy("files/tmp/{$_POST['tmp_image']}.jpg", $dir['0'].$insert_id.".jpg");
+				copy("files/tmp/{$_POST['tmp_image']}_s.jpg", $dir['0'].$insert_id."_s.jpg");
+				unlink("files/tmp/{$_POST['tmp_image']}.jpg");
+				unlink("files/tmp/{$_POST['tmp_image']}_s.jpg");
 			}
 			
 			$message.= messageAdmin('Данные успешно добавлены');
@@ -318,7 +325,7 @@ class ProductController extends BaseController{
 
 					$message = $this->checkUrl($this->tb, $url, $_POST['id']);
 					
-					$param = array($_POST['code'], $_POST['price'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['body_m'], $_POST['active'], $_POST['discount'], $_POST['id']);
+					$param = array($_POST['code'], $_POST['price'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['active'], $_POST['cnt'], $_POST['discount'], $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb_lang."` tb1, ".$this->tb." tb2
 					                  SET
 					                        tb2.`code`=?,
@@ -328,8 +335,8 @@ class ProductController extends BaseController{
 					                        tb1.`keywords`=?,
 					                        tb1.`description`=?,
 					                        tb1.`body`=?,
-											tb1.`body_m`=?,
 											tb2.active=?,
+											tb2.cnt=?,
 											tb2.discount=?
 											
 					                  WHERE
@@ -352,6 +359,8 @@ class ProductController extends BaseController{
 							$this->db->query("UPDATE ".$this->tb_photo." SET name=? WHERE photo_id=?", array($_POST['photo_name'][$i], $_POST['save_photo_id'][$i]));
 						}
 					}
+					
+					
 					$message .= messageAdmin('Данные успешно сохранены');
 				}
 				else $message .= messageAdmin('При сохранение произошли ошибки', 'error');
@@ -396,7 +405,7 @@ class ProductController extends BaseController{
         if($_SESSION['search']['price_from']!=""&&$_SESSION['search']['price_to']=="")$where.="AND (tb.price >='{$_SESSION['search']['price_from']}')";
         elseif($_SESSION['search']['price_from']==""&&$_SESSION['search']['price_to']!="")$where.="AND (tb.price <='{$_SESSION['search']['price_to']}')";
         elseif($_SESSION['search']['price_from']!=""&&$_SESSION['search']['price_to']!="")$where.="AND (tb.price <='{$_SESSION['search']['price_to']}' AND tb.price >='{$_SESSION['search']['price_from']}')";
-        $size_page =10;
+        $size_page =10000000;
         $start_page = 0;
         $cur_page = 0;
         $vars['paging'] = '';

@@ -24,16 +24,16 @@
 }
 
 .orders{
-    border: 1px solid #eee;
+    border: 1px solid #3c1a00;
     border-collapse: collapse;
 }
 .orders, .price_tab a{
 	color:#af8274;
 }
 .orders th{
-	color:#646464;
-    border: 1px solid #ccc;
-    background-color: #e0f1fa;
+	color:#fff;
+    border: 1px solid #3c1a00;
+    background-color: #816a58;
     padding: 3px;
 }
 .orders td{
@@ -41,7 +41,7 @@
 	color:#000;
 }
 .orders tr{
-	background-color: #eee;
+	background-color: #fff7eb;
 }
 .orders tr:nth-child(2n){
 	background-color: #fff;

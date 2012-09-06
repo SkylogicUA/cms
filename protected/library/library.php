@@ -25,6 +25,7 @@
 			}
 			$return['price'] = formatPrice($price);
 			$return['cur_price'] = round($price, 2);
+			$return['base_price'] = $price;
 		}
 		else
 		{
@@ -46,8 +47,8 @@
 	
 	function formatPrice($price)
 	{
-		if($_SESSION['currency'][1]['position']==1)$price = number_format($price, 2, ',', ' ').' '.$_SESSION['currency'][1]['icon'];
-		else $price = $_SESSION['currency'][1]['icon'].number_format($price, 2, ',', ' ');
+		if($_SESSION['currency'][1]['position']==1)$price = number_format($price, 2, ',', ' ').' '.'<font>'.$_SESSION['currency'][1]['icon'].'</font>';
+		else $price = '<font>'.$_SESSION['currency'][1]['icon'].'</font>'.number_format($price, 2, ',', ' ');
 		return $price;
 	}
 	function discount($discount, $sum)
