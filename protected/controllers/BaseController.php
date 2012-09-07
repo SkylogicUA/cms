@@ -177,6 +177,21 @@ class BaseController{
 		}
 	}
 	
+	//-----------------функция для вывода каталога SELECT------------------------------------------------------
+	function select_catal( $tab='menu',$text_grupa = ''){
+		$text='';
+		$query="SELECT * FROM `$tab` JOIN `{$this->key_lang}_$tab`  on `{$this->key_lang}_$tab`.`menu_id`=`$tab`.`id` ORDER BY `sub` asc, `sort` asc";
+	
+		$arrayCategories = array();
+		foreach( $this->db->rows($query) as $row){ 	
+			$arrayCategories[$row['id']] = array("sub" => $row['sub'], "name" => $row['name'] );	 
+		} 
+	 
+		$text=createTree_cat($arrayCategories,0,$text_grupa) ;
+	
+	return 	$text;	
+	}
+	
 	function getOpenLink($id)
 	{
 		$return=array();

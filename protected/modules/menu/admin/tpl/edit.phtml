@@ -54,17 +54,17 @@
 								<input type="radio" class="radio" value="1" id="form1" name="form" <? if($vars['edit']['form']==1)echo' checked="checked"';?>>
 								<label for="form1">Обратная связь</label>
 								
-								<input type="radio" class="radio" value="2" id="form2" name="form" <? if($vars['edit']['form']==2)echo' checked="checked"';?>>
-								<label for="form2">Комментарии</label>
+							<!--	<input type="radio" class="radio" value="2" id="form2" name="form" <?// if($vars['edit']['form']==2)echo' checked="checked"';?>>
+								<label for="form2">Комментарии</label> -->
 							</div>
 						</div>
 						<div class="form-field">
 							<label class="cm-required">Статус:</label>
 							<div class="select-field">
-								<input type="radio" class="radio" value="1" id="page_data_0_a" name="active" <? if($vars['edit']['active']==1)echo' checked="checked"';?>>
-								<label for="page_data_0_a">Вкл.</label>
-								<input type="radio" class="radio" value="0" id="page_data_0_d" name="active" <? if($vars['edit']['active']==0)echo' checked="checked"';?>>
-								<label for="page_data_0_d">Выкл.</label>
+								<input type="radio" class="radio" value="0" id="page_data_0_a" name="active" <? if($vars['edit']['active']==0)echo' checked="checked"';?>>
+								<label for="page_data_0_a">Выкл.</label>
+								<input type="radio" class="radio" value="1" id="page_data_0_d" name="active" <? if($vars['edit']['active']==1)echo' checked="checked"';?>>
+								<label for="page_data_0_d">Вкл.</label>
 							</div>
 						</div>
 					</fieldset>
