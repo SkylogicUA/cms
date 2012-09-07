@@ -1,5 +1,5 @@
 <?php
-    //echo phpversion()ssssss;
+    //echo phpversion()saaaaaaaaaaaaaaaaa;
 	error_reporting(0);
 	if(version_compare(phpversion(), '5.1.0', '<') == true){die('PHP 5.1 Only');}
 
