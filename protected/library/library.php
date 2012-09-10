@@ -108,6 +108,7 @@
 		else $price = '<font>'.$_SESSION['currency'][1]['icon'].'</font>'.number_format($price, 2, ',', ' ');
 		return $price;
 	}
+	
 	function discount($discount, $sum)
 	{
 		//$return=array();
@@ -188,32 +189,52 @@
 		mail($contact_mail, $subject, $body, $header);
 	}
 	
-	function translit($str)
+	function translit($string, $flag=false)	
 	{
-	  
-		//	echo" $str";
-		$transtable = array();
-		$transtable = array('А' => 'A',		'Б' => 'B',		'В' => 'V',		'Г' => 'G',		'Д' => 'D',		'Е' => 'E',
-							'Ё' => 'Yo',	'Ж' => 'Zh',	'З' => 'Z',		'И' => 'I',		'Й' => 'Y',		'К' => 'K',
-							'Л' => 'L',		'М' => 'M',		'Н' => 'N',		'О' => 'O',		'П' => 'P',		'Р' => 'R',
-							'С' => 'S',		'Т' => 'T',		'У' => 'U',		'Ф' => 'F',		'Х' => 'H',		'Ц' => 'Ts',
-							'Ч' => 'Ch',	'Ш' => 'Sh',	'Щ' => 'Shch',	'Ъ' => '',		'Ы' => 'I',		'Ь' => '',
-							'Э' => 'E',		'Ю' => 'Yu',	'Я' => 'Ya',	'а' => 'a',		'б' => 'b',		'в' => 'v',
-							'г' => 'g',		'д' => 'd',		'е' => 'e',		'ё' => 'yo',	'ж' => 'zh',	'з' => 'z',
-							'и' => 'i',		'й' => 'y',		'к' => 'k',		'л' => 'l',		'м' => 'm',		'н' => 'n',
-							'о' => 'o',		'п' => 'p',		'р' => 'r',		'с' => 's',		'т' => 't',		'у' => 'u',
-							'ф' => 'f',		'х' => 'h',		'ц' => 'ts',	'ч' => 'ch',	'ш' => 'sh',	'щ' => 'shch',
-							'ъ' => '',		'ы' => 'i',		'ь' => '',		'э' => 'e',		'ю' => 'yu',	'я' => 'ya',
-							
-							' ' => '-',		'\\' => '',		'/' => '',		'*' => '',		'+' => '',		'&' => '',
-							'>' => '',		'<' => '',		'@' => '',		'№' => '',		';' => '',		'%' => '',		
-							':' => '',		'?' => '',		'(' => '',		')' => '',		'=' => '',		'!' => '',		
-							'"' => '',		'\'' => '',		'$' => '',		'.' => '-',		',' => '',		'~' => '',		
-							'^' => '',		'«' => '',		'»' => '');
-		  //  заменяем "односимвольные", многосимвольные, символы    
-		$str = strtr($str, $transtable);
-		$str=mb_strtolower($str); 
-		return $str;
+		if(!$flag)$string = preg_replace("/[^a-zA-ZА-Яа-я0-9\s]/", "-", $string); 
+		else $string = preg_replace("/[^a-zA-ZА-Яа-я0-9\s\/\:]/", "-", $string); 
+		$replace=array(
+			"'"=>"",
+			"`"=>"",
+			"а"=>"a","А"=>"a",
+			"б"=>"b","Б"=>"b",
+			"в"=>"v","В"=>"v",
+			"г"=>"g","Г"=>"g",
+			"д"=>"d","Д"=>"d",
+			"е"=>"e","Е"=>"e",
+			"ж"=>"zh","Ж"=>"zh",
+			"з"=>"z","З"=>"z",
+			"и"=>"i","И"=>"i",
+			"й"=>"y","Й"=>"y",
+			"к"=>"k","К"=>"k",
+			"л"=>"l","Л"=>"l",
+			"м"=>"m","М"=>"m",
+			"н"=>"n","Н"=>"n",
+			"о"=>"o","О"=>"o",
+			"п"=>"p","П"=>"p",
+			"р"=>"r","Р"=>"r",
+			"с"=>"s","С"=>"s",
+			"т"=>"t","Т"=>"t",
+			"у"=>"u","У"=>"u",
+			"ф"=>"f","Ф"=>"f",
+			"х"=>"h","Х"=>"h",
+			"ц"=>"c","Ц"=>"c",
+			"ч"=>"ch","Ч"=>"ch",
+			"ш"=>"sh","Ш"=>"sh",
+			"щ"=>"sch","Щ"=>"sch",
+			"ъ"=>"","Ъ"=>"",
+			"ы"=>"y","Ы"=>"y",
+			"ь"=>"","Ь"=>"",
+			"э"=>"e","Э"=>"e",
+			"ю"=>"yu","Ю"=>"yu",
+			"я"=>"ya","Я"=>"ya",
+			"і"=>"i","І"=>"i",
+			"ї"=>"yi","Ї"=>"yi",
+			"є"=>"e","Є"=>"e",
+			"	"=>"-"," "=>"-"
+		);
+		$string=iconv("UTF-8","UTF-8//IGNORE",strtr($string,$replace));
+		return mb_strtolower($string);
 	}
 		
 	function var_info($vars,$d=false)
@@ -259,7 +280,8 @@
 		return $var;
 	}
 	
-	function post_write($err,$header = false){
+	function post_write($err,$header = false)
+	{
 		$_POST['err'] = $err;
 		$_SESSION['_POST'] = $_POST;
 		$_POST = array();
@@ -269,7 +291,8 @@
 		}
 	}
 	
-	function post_read(){
+	function post_read()
+	{
 		
 		if(empty($_SESSION['_POST'])) return array();
 		$post = $_SESSION['_POST'];
@@ -415,7 +438,8 @@
         return '=?' . $send_charset . '?B?' . base64_encode($str) . '?=';
     }
 	
-	function genPassword($size = 8){
+	function genPassword($size = 8)
+	{
 		$a = array('e','y','u','i','o','a');
 		$b = array('q','w','r','t','p','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m');
 		$c = array('1','2','3','4','5','6','7','8','9','0');
@@ -481,6 +505,7 @@
 			}
 		}
 		
+		//var_info($matches);
 		for($i=0; $i<=count($matches) - 1; $i++)
 		{
 			if(strpos($matches[$i], $name_dir)!==false)
