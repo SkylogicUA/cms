@@ -1,3 +1,3 @@
 ﻿Мета-данные
 Мета-данные
-meta_data
+ru_meta_data,meta_data
