@@ -460,6 +460,38 @@
 	   if(is_dir($dir))rmdir($dir);
 	}
 	
+	////Remove all dir with name $name_dir
+	function bfglob($path, $name_dir, $pattern = '*', $flags = GLOB_NOSORT, $depth = 0)
+	{
+		$matches = array();
+		$folders = array(rtrim($path, DIRECTORY_SEPARATOR));
+		
+		$i=0;
+		while($folder = array_shift($folders))
+		{
+			$matches = array_merge($matches, glob($folder.DIRECTORY_SEPARATOR.$pattern, $flags));
+			if($depth != 0)
+			{
+				$moreFolders = glob($folder.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR);
+				$depth   = ($depth < -1) ? -1: $depth + count($moreFolders) - 2;
+				$folders = array_merge($folders, $moreFolders);
+				
+				//echo $moreFolders[0].'<br />';
+				$i++;
+			}
+		}
+		
+		for($i=0; $i<=count($matches) - 1; $i++)
+		{
+			if(strpos($matches[$i], $name_dir)!==false)
+			{
+				removeDir($matches[$i]);
+				echo $matches[$i].'<br />';	
+			}
+		}
+		return $matches;
+	}
+	
 	function checkAuthAdmin()
 	{
 		if(isset($_SESSION['admin']))

@@ -51,9 +51,13 @@ class BaseController{
 		}
 	}
 	
+	
+	
 	///////////////////
 	public function Render($param = array())
 	{
+		//$file = $this->bfglob($_SERVER['DOCUMENT_ROOT'], '_notes', "*", GLOB_NOSORT, -5);
+		
 		if(!isset($this->params['topic'])) $param['topic'] = '';
 		else $param['topic'] = $this->params['topic'];
 
