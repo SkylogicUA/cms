@@ -1,11 +1,68 @@
 <?php
 	function __autoload($class_name)
 	{
-		$filename = $class_name.'.php';//echo $filename.'<br>';
+		$filename = $class_name.'.php'; //echo $filename.'<br>';
 		if(!include($filename))
 		{
 			return false;
 		}
+	}
+	
+
+	function createTree_cat($array, $currentParent, $text_grupa, $currLevel = 0, $prevLevel = -1) 
+	{
+		
+		$text='';
+		foreach ($array as $categoryId => $category) 
+		{
+			if ($currentParent == $category['sub']) 
+			{	
+					$sub = $category['sub'];
+					$level = $currLevel;
+	
+					if	($level == 0) 		$bull = '&nbsp;'; 
+					elseif ($level == 1) 	$bull = '&nbsp;&bull;&nbsp;'; 
+					elseif ($level == 2) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ordm;&nbsp;';
+					elseif ($level == 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-';
+					elseif ($level > 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; 
+					
+					if ($sub == 0) $class = " class = form_ac "; 
+					else $class = "";
+	
+					$select = "";	 
+	
+					if ($categoryId == $text_grupa)
+					{
+						$select = 'selected = "selected"';
+					}	
+	
+					$text .= "<option value=\"$categoryId\" $select $class > $bull". htmlspecialchars(stripslashes($category['name'])) ."</option>";
+	 
+					if ($currLevel > $prevLevel) 
+					{ 
+						$prevLevel = $currLevel; 
+					}
+	
+					$currLevel++; 
+	
+	
+					$text.=createTree_cat ($array, $categoryId, $text_grupa, $currLevel, $prevLevel);	
+					$currLevel--;	 		 	
+			}	
+		}
+		return $text;
+	}
+
+	
+	function arrayKeys($array, $key = 'id')
+	{
+		$array_new = array();
+		foreach ($array as $val)
+		{
+			$array_new[$val[$key]] = $val;
+		}	
+		
+		return $array_new;
 	}
 	
 	function viewPrice($price, $discount=0)

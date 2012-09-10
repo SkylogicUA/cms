@@ -1,19 +1,22 @@
 <?php
 /*
- * вывод каталога компаний и их данных
- */
-class MenuController extends BaseController{
-	
+* редактирвоание главного меню
+*/
+
+class MenuController extends BaseController
+{
 	protected $params;
 	protected $db;
-	
+
 	function  __construct($registry, $params)
 	{
 		parent::__construct($registry, $params);
+		$this->registry = $registry; 
+		$this->key_lang = $this->registry['key_lang'];//Current language
+		
 		$this->tb = "menu";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
-		$this->registry = $registry;
-		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
+
 	}
 
 	public function indexAction()
@@ -21,37 +24,38 @@ class MenuController extends BaseController{
 		if(isset($_POST['sort_menu']))$_SESSION['sort_menu']=$_POST['sort_menu'];
         if(!isset($_SESSION['sort_menu']))$_SESSION['sort_menu']=0;
 		$vars['message'] = '';
-		
+	
 		if(isset($this->registry['access']))$vars['message'] = $this->registry['access'];
 		if(isset($this->params['delete'])||isset($_POST['delete']))$vars['message'] = $this->delete();
 		elseif(isset($_POST['update']))$vars['message'] = $this->save();
 		elseif(isset($_POST['update_close']))$vars['message'] = $this->save();
 		elseif(isset($_POST['add_close']))$vars['message'] = $this->add();
-		
+	
+
 		$view = new View($this->registry);
 		$vars['list'] = $view->Render('view.phtml', $this->listView());
-		
+
 		$vars['menu'] = $this->db->rows("SELECT tb.id, tb.sub, tb2.name
                                           FROM `".$this->tb."` tb
                                           LEFT JOIN `".$this->tb_lang."` tb2
                                           ON tb2.menu_id=tb.id
-
                                           ORDER BY tb.sort ASC");
+
 		$data['content'] = $view->Render('list.phtml', $vars);
 		return $this->Render($data);
 	}
-	
+
 	public function addAction()
 	{
 		$vars['message'] = '';
-		if(isset($_POST['add']))$vars['message'] = $this->add();
-		
-		$vars['list'] = $this->listView();
+		if(isset($_POST['add']))$vars['message'] = $this->add(); 
+		$vars['sel_catalog'] =$this->select_catal($this->tb,$_SESSION['sort_menu']); 
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('add.phtml', $vars);
 		return $this->Render($data);
+
 	}
-	
+
 	public function editAction()
 	{
 		//if($vars['message']!='')return Router::act('error');
@@ -67,26 +71,26 @@ class MenuController extends BaseController{
 												tb.id=tb2.".$this->tb."_id 
 										WHERE
 											tb.id=?",
-										array($this->params['edit']));
-		$vars['list'] = $this->listView();
+										array($this->params['edit']));		
+		//$vars['list'] = $this->listView(); 
+		$vars['select_tree'] =$this->select_tree($this->tb,$vars['edit']['sub']); 
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('edit.phtml', $vars);
 		return $this->Render($data);
 	}
-	
-	
+
 	private function add()
 	{
 		$message='';
-		if(isset($_POST['sub'], $_POST['form'], $_POST['active'], $_POST['url'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['name']!="")
+		if(isset($_POST['sub'], $_POST['active'], $_POST['url'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['name']!="")
 		{
 			if($_POST['url']=='')$url = translit($_POST['name']);
 			else $url = translit($_POST['url']);
 			
 			if($_POST['sub']==0)$sub = NULL;
 			else $sub = $_POST['sub'];
-			$param = array($sub, $_POST['active'], $_POST['form']);
-			$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `sub`=?, `active`=?, `form`=?", $param);
+			$param = array($sub, $_POST['active']);
+			$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `sub`=?, `active`=?", $param);
 			$message = $this->checkUrl($this->tb, $url, $insert_id);
 			foreach($this->language as $lang)
 			{
@@ -99,8 +103,7 @@ class MenuController extends BaseController{
 		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
 		return $message;
 	}
-	
-	
+
 	private function save()
 	{
 		$message='';
@@ -133,8 +136,8 @@ class MenuController extends BaseController{
 					$message = $this->checkUrl($this->tb, $url, $_POST['id']);
 					if($_POST['sub']==0)$sub = NULL;
 					else $sub = $_POST['sub'];
-					$param = array($sub, $_POST['active'], $_POST['form'], $_POST['id']);
-					$this->db->query("UPDATE `".$this->tb."` SET `sub`=?, `active`=?, `form`=? WHERE id=?", $param);
+					$param = array($sub, $_POST['active'], $_POST['id']);
+					$this->db->query("UPDATE `".$this->tb."` SET `sub`=?, `active`=? WHERE id=?", $param);
 					
 					$param = array($_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb_lang."` SET `name`=?, `title`=?, `keywords`=?, `description`=?, `body`=? WHERE `".$this->tb."_id`=?", $param);
@@ -145,7 +148,7 @@ class MenuController extends BaseController{
 		}
 		return $message;
 	}
-	
+
 	private function delete()
 	{
 		$message='';
@@ -184,6 +187,6 @@ class MenuController extends BaseController{
 										$where		
 										 ORDER BY tb.`sort` ASC");
 		return $vars;
-	}
+	} 
 }
 ?>
