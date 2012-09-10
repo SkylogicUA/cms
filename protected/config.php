@@ -1,4 +1,5 @@
 <?php
+/*web*/
 $DB_Host = 'localhost';
 $DB_Name = 'skycms';
 $DB_UserName = 'root';
