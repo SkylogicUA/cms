@@ -1,9 +1,8 @@
 <?php
 class errorController extends BaseController{
 	
-	private $registry;
 	protected $params;
-	protected $key_lang="ru";
+	protected $db;
 	
 	function  __construct($registry, $params)
 	{ 

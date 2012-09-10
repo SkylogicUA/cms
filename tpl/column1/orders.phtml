@@ -16,7 +16,7 @@
 			{
 
 				echo"<tr>
-						<td style='padding:5px 15px;'><a href='/users/orders/id/{$row['id']}'>#{$row['id']}</a></td>
+						<td style='padding:5px 15px;'><a href='".LINK."/users/orders/id/{$row['id']}'>#{$row['id']}</a></td>
 						<td>{$row['name']}</td>
 						<td>".$this->date_view($row['date_add'], "dd/mm/YY, hh:ii")."</td>
 						<td>{$row['sum']}</td>

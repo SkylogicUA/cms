@@ -101,8 +101,6 @@ class BaseController{
 									   'ajax.js', 
 									   'jquery.stickr.min.js',
 									   'jquery.fancybox-1.3.4.pack.js',
-									   'cufon-yui.js',
-									   'peterburg_italic.font.js',
 									   'jquery.jcarousel.min.js'
 									   ), 
 									   $param['scripts']);
@@ -111,7 +109,7 @@ class BaseController{
 			$data2=array();
             $data['translate'] = $this->translation;///Переводы интерфейса
             if(!isset($data['meta']))$data['meta']=array();
-            $data['meta']=$this->meta($data['meta']);//Вызов функции мета-данных
+            $data['meta']=$this->meta($data['meta'], $param['topic']);//Вызов функции мета-данных
 			
 			#Start Main menu
             $menu = $this->db->rows("SELECT tb1.*, tb2.name 
@@ -257,7 +255,7 @@ class BaseController{
 			if($cnt!=$i)$return.=' '.$separator.' ';	
 			$i++;
 		}
-		if($return!='')$return='<div id="breadcrumbs"><a href="/">'.$this->translation['main'].'</a> '.$separator.' '.$return.'</div>';
+		if($return!='')$return='<div id="breadcrumbs"><a href="'.LINK.'/">'.$this->translation['main'].'</a> '.$separator.' '.$return.'</div>';
 		return $return;
 	}
 	
@@ -274,13 +272,13 @@ class BaseController{
 										  WHERE tb.id=?", array($catrow));
 		}
 		
-		if($product_name!='')$last='<a href="/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>'.' ';
+		if($product_name!='')$last='<a href="'.LINK.'/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>'.' ';
 		if($catrow['sub']==0)
 		{
-			if($product_name!='')$return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
-												 '<a href="/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
+			if($product_name!='')$return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
+												 '<a href="'.LINK.'/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
 												  $product_name);	
-			else $return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
+			else $return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
 								 $catrow['name']);	
 		}
 		else{
@@ -293,12 +291,12 @@ class BaseController{
 			
 			if($catrow2['sub']==0)
 			{
-				if($product_name!='')$return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
-													 '<a href="/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
-													 '<a href="/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
+				if($product_name!='')$return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
+													 '<a href="'.LINK.'/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
+													 '<a href="'.LINK.'/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
 													 $product_name);	
-				else $return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
-									 '<a href="/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
+				else $return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
+									 '<a href="'.LINK.'/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
 									 $catrow['name']);	
 			}
 			else{
@@ -309,14 +307,14 @@ class BaseController{
 												
 											  WHERE tb.id=?",array($catrow2['sub']));
 											  
-				if($product_name!='')$return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
-													 '<a href="/catalog/'.$catrow3['url'].'">'.$catrow3['name'].'</a>',  
-													 '<a href="/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
-													 '<a href="/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
+				if($product_name!='')$return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
+													 '<a href="'.LINK.'/catalog/'.$catrow3['url'].'">'.$catrow3['name'].'</a>',  
+													 '<a href="'.LINK.'/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
+													 '<a href="'.LINK.'/catalog/'.$catrow['url'].'">'.$catrow['name'].'</a>', 
 													 $product_name);	
-				else $return = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', 
-									 '<a href="/catalog/'.$catrow3['url'].'">'.$catrow3['name'].'</a>',  
-									 '<a href="/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
+				else $return = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', 
+									 '<a href="'.LINK.'/catalog/'.$catrow3['url'].'">'.$catrow3['name'].'</a>',  
+									 '<a href="'.LINK.'/catalog/'.$catrow2['url'].'">'.$catrow2['name'].'</a>', 
 									 $catrow['name']);										 
 			}
 		}
@@ -324,11 +322,26 @@ class BaseController{
 		return $return;
 	}
 	
-	public function meta($data)///Мета-данные страницы
+	public function meta($data, $topic)///Мета-данные страницы
 	{
+		//echo $topic;
 		$settings = Registry::get('user_settings');
         $url = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        $row=$this->db->row("SELECT * FROM `meta_data` WHERE url=? AND active=?", array($url, 1));
+		if(substr($url, strlen($url)-1, 1)=='/'&&$_SERVER['REQUEST_URI']!='/')
+		{
+			$lang='';
+			if($this->key_lang!='ru')$lang='/'.$this->key_lang;
+			$url2 = "http://".$_SERVER['HTTP_HOST'].$lang.$_SERVER['REQUEST_URI'];
+			header("HTTP/1.1 301 Moved Permanently");
+			header('Location: '.substr($url2, 0, strlen($url2)-1));
+			exit();
+			
+		}//echo $url;
+        $row=$this->db->row("SELECT * FROM `meta_data` tb
+							 
+							 LEFT JOIN ".$this->key_lang."_meta_data tb2
+							 ON tb.id=tb2.meta_id
+							 WHERE url=? AND active=? AND title!=''", array($url, 1));
 
         if($row)
         {
@@ -340,13 +353,13 @@ class BaseController{
         elseif(count($data)!=0)
         {
             if(isset($data['title'])&&$data['title']!="")$data['title']=$data['title'];
-            else $data['title']=$settings['sitename'];
+            else $data['title']=$data['name'];
 
             if(isset($data['keywords'])&&$data['keywords']!="")$data['keywords']=$data['keywords'];
-            else $data['keywords']=$settings['sitename'];
+            else $data['keywords']=$data['name'];
 
             if(isset($data['description'])&&$data['description']!="")$data['description']=$data['description'];
-            else $data['description']=$settings['sitename'];
+            else $data['description']=$data['name'];
         }
         else{
             $data['title']=$settings['sitename'];

@@ -17,7 +17,13 @@ class IndexController extends BaseController {
     {
 		$vars['translate'] = $this->translation;///Переводы интерфейса
         $view = new View($this->registry);
-        $vars['slider'] = $this->db->rows("SELECT * FROM slider WHERE active=? ORDER BY sort ASC", array(1));
+        $vars['slider'] = $this->db->rows("SELECT * FROM slider 
+										   
+										   LEFT JOIN ".$this->key_lang."_slider s
+										   ON s.slider_id=slider.id
+										   
+										   WHERE active=? 
+										   ORDER BY sort ASC", array(1));
 		$vars['catalog'] = $this->db->rows("SELECT tb.id, tb.url, tb2.name
 											  FROM catalog tb 
 												LEFT JOIN ".$this->key_lang."_catalog tb2

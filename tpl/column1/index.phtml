@@ -14,9 +14,20 @@
             <?php echo $this->LoadResource('styles', 'style_ie.css'); ?>
         <![endif]-->
         <?php echo $vars['scripts']; //?>
-		<script type="text/javascript">
-			Cufon.replace(".peterburg",{hover: true});
-		</script>
+        <?php
+			if(isset($vars['google']))
+			echo"<script type=\"text/javascript\">
+				  var _gaq = _gaq || [];
+				  _gaq.push(['_setAccount', '".$vars['google']."']);
+				  _gaq.push(['_trackPageview']);
+				
+				  (function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				  })();
+				</script>";
+		?>
 	</head>
 <body>
 <div id="top_light">
@@ -39,7 +50,7 @@
 		<div class="clear"></div>
 	</div>	
     <div id="footer">
-		<? echo $vars['feedback'];?>
+		<? //echo $vars['feedback'];?>
 		<div style="color:#323232; font-size:12px; font-style:italic;">
 			<div style="width:300px; float:left;"><?=$vars['translate']['copyright']?></div>
 			<div style="width:660px; float:left; text-align:right;"><a href="http://skylogic.com.ua" target="_blank" style="color:#323232; font-size:12px; font-style:italic;"><?=$vars['translate']['skylogic']?></a></div>
@@ -50,19 +61,5 @@
 </div>
 </div>
 </div>
-<?php
-if(isset($vars['google']))
-echo"<script type=\"text/javascript\">
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', '".$vars['google']."']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	</script>";
-?>
 </body>
 </html>

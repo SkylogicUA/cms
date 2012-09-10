@@ -32,7 +32,7 @@
             if(file_exists("files/photos/".$row['id']."_s.jpg"))$img="<img src='/files/photos/".$row['id']."_s.jpg' alt='' />";
             else $img="";
             $i++;
-            echo'<div class="photo"';if($i==4){echo' style="margin-right:0;"';$i=0;}echo'><a href="/photos/'.$row['url'].'">'.$img.'<br />> '.$row['name'].'</a></div>';
+            echo'<div class="photo"';if($i==4){echo' style="margin-right:0;"';$i=0;}echo'><a href="'.LINK.'/photos/'.$row['url'].'">'.$img.'<br />> '.$row['name'].'</a></div>';
         }
         echo"</div>";
         echo $vars['paging'];

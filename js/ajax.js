@@ -1,20 +1,46 @@
 $(document).ready(function(){
-    bascket();
+	bascket();
+	$("#f_name").live('focus', function(){if($(this).val()=='Имя')$(this).val('')});
+	$("#f_name").live('blur', function(){if($(this).val()=='')$(this).val('Имя')});
+	
+	$("#f_email").live('focus', function(){if($(this).val()=='E-mail')$(this).val('')});
+	$("#f_email").live('blur', function(){if($(this).val()=='')$(this).val('E-mail')});
+	
+	$("#f_phone").live('focus', function(){if($(this).val()=='Телефон')$(this).val('')});
+	$("#f_phone").live('blur', function(){if($(this).val()=='')$(this).val('Телефон')});
+	
+	$("#f_message").live('focus', function(){if($(this).val()=='Сообщение')$(this).val('')});
+	$("#f_message").live('blur', function(){if($(this).val()=='')$(this).val('Сообщение')});
+	
+	/////Add to delivery prices
+	$('#delivery').live('change',function(){
+		
+		var id=$(this).val();
+		var dataString = 'id='+id;
+		$.ajax({type: "POST",url: "/ajax/deliveryprice",data: dataString,cache: false,success: function(html)
+		{
+			$('#deliver_price').html(html);
+		}});
+	});
 });
+
 
 /////Add to shop cart
 $('.buy').live('click',function(){
 	
 	var id=$(this).attr('name');
+	var price_id=$('#price'+id).val();
 	//var amount=$('#amount'+id).val();//alert(amount);
-	var amount=1;
-	var dataString = 'id='+id+'&amount='+amount;
+	var amount=$('#cnt').val();
+	var dataString = 'id='+id+'&amount='+amount+'&price_id='+price_id;
 	$.ajax({type: "POST",url: "/ajax/incart",data: dataString,cache: false,success: function(html)
 	{
 		bascket();
 		$.stickr({note:'Товар добавлен!',className:'next',position:{right:0,bottom:0},time:1000,speed:300});
 	}});
 });
+
+
 
 ///Bascket
 function bascket()
@@ -48,16 +74,24 @@ function addComment(id, type)
 ///Send form feedback
 function sendFeedback()
 {
-    $("#loader").css('display', 'block');
+    //$("#loader").css('display', 'block');
     var name = $("#f_name").val();
     var email = $("#f_email").val();//alert(email);
+	var phone = $("#f_phone").val();//alert(email);
     var message = $("#f_message").val();
 
-    var dataString = 'name='+name+'&email='+email+'&message='+message;
+    var dataString = 'name='+name+'&email='+email+'&phone='+phone+'&message='+message;
     $.ajax({type: "POST",url: "/ajax/feedback", data: dataString,dataType: 'json',cache: false, success:function(html){
         $("#message").html(html[1]);
 
-        if(html[0]==1)closeFeedback(5000);
+        if(html[0]==1)
+		{
+			$("#f_name").val('');
+			$("#f_email").val('');//alert(email);
+			$("#f_phone").val('');
+			$("#f_message").val('');
+			//closeFeedback(5000);
+		}
 
     }});
     //$("#message").html(html);

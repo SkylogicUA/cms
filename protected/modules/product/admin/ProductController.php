@@ -29,6 +29,8 @@ class ProductController extends BaseController{
             $_SESSION['search']['price_from']="";
             $_SESSION['search']['price_to']="";
             $_SESSION['search']['word']="";
+			$_SESSION['search']['sort']='';
+			$_SESSION['search']['onpage']=10;
         }
         elseif(isset($_POST['word']))
         {
@@ -36,6 +38,8 @@ class ProductController extends BaseController{
             $_SESSION['search']['price_from']=$_POST['price_from'];
             $_SESSION['search']['price_to']=$_POST['price_to'];
             $_SESSION['search']['word']=$_POST['word'];
+			$_SESSION['search']['sort']=$_POST['sort'];
+			$_SESSION['search']['onpage']=$_POST['onpage'];
         }
 		$vars['message'] = '';
 		$vars['name'] = $this->name;
@@ -47,7 +51,7 @@ class ProductController extends BaseController{
 		
 		$view = new View($this->registry);
 		$vars['list'] = $view->Render('view.phtml', $this->listView());
-
+		$vars['status'] = $this->db->rows("SELECT *, comment as name FROM `product_status` ORDER  BY id ASC");
         $vars['catalog'] = $this->db->rows("SELECT tb.*, tb3.*, tb2.product_id
 											  FROM `".$this->tb_cat."` tb
 											  
@@ -264,9 +268,9 @@ class ProductController extends BaseController{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
 						//echo $_POST['name'][$i].'<br>';
-						$param = array($_POST['code'][$i], $_POST['price'][$i], $_POST['save_id'][$i]);
+						$param = array($_POST['code'][$i], $_POST['price'][$i], $_POST['sort'][$i], $_POST['save_id'][$i]);
 						$this->db->query("UPDATE `".$this->tb_lang."` tb, `".$this->tb."` tb2 
-										  SET tb2.`code`=?, tb2.`price`=? 
+										  SET tb2.`code`=?, tb2.`price`=?, tb2.`sort`=? 
 										  WHERE tb.product_id=? AND tb2.id=tb.product_id", $param);
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
@@ -398,22 +402,53 @@ class ProductController extends BaseController{
 	
 	private function listView()
 	{
-        $where="";
+        $where=""; 
+		$sort='ORDER BY tb.`sort` ASC, id DESC';
         if($_SESSION['search']['word']!="")$where="AND (tb2.name LIKE '%{$_SESSION['search']['word']}%' or tb.code LIKE '%{$_SESSION['search']['word']}%' or tb2.body LIKE '%{$_SESSION['search']['word']}%' or tb2.body_m LIKE '%{$_SESSION['search']['word']}%' or tb4.name LIKE '%{$_SESSION['search']['word']}%')";
-        if($_SESSION['search']['cat_id']!=0)$where.="AND (tb5.id ='{$_SESSION['search']['cat_id']}' OR tb5.sub ='{$_SESSION['search']['cat_id']}')";
+        
         if($_SESSION['search']['price_from']!=""&&$_SESSION['search']['price_to']=="")$where.="AND (tb.price >='{$_SESSION['search']['price_from']}')";
         elseif($_SESSION['search']['price_from']==""&&$_SESSION['search']['price_to']!="")$where.="AND (tb.price <='{$_SESSION['search']['price_to']}')";
         elseif($_SESSION['search']['price_from']!=""&&$_SESSION['search']['price_to']!="")$where.="AND (tb.price <='{$_SESSION['search']['price_to']}' AND tb.price >='{$_SESSION['search']['price_from']}')";
-        $size_page =10000000;
+
+		$sort2=explode('-', $_SESSION['search']['cat_id']);
+		if($_SESSION['search']['cat_id']!="0")
+		{
+			if($sort2[0]=='status')
+			{
+				$where.="AND (pss.status_id ='{$sort2[1]}')";
+				$sort="ORDER BY tb.sort".$sort2[1]." ASC";
+			}
+			else{
+				$where.="AND (tb3.catalog_id ='{$_SESSION['search']['cat_id']}')";
+			}
+		}
+	   
+		if(isset($_SESSION['search']['sort']) && $_SESSION['search']['sort']<>'nul')
+		{
+			if($_SESSION['search']['sort']=='name asc')$sort="ORDER BY tb2.name ASC, id DESC"; 
+			elseif($_SESSION['search']['sort']=='name desc')$sort="ORDER BY tb2.name DESC, id DESC"; 
+			else if($_SESSION['search']['sort']=='price asc')$sort="ORDER BY tb.price ASC"; 
+			else if($_SESSION['search']['sort']=='price desc')$sort="ORDER BY tb.price desc"; 
+			else if($_SESSION['search']['sort']=='catalog')
+			{
+				$sort="ORDER BY tb_cat.sort asc";
+			}
+		}
+		else $sort='ORDER BY tb.`sort` ASC, id DESC';
+		 
+		
+	   	$settings = Registry::get('user_settings');
+	    $size_page = $_SESSION['search']['onpage'];
         $start_page = 0;
         $cur_page = 0;
         $vars['paging'] = '';
-
+ 
         if(isset($this->params['page']))
         {
             $cur_page = $this->params['page'];
             $start_page = ($cur_page-1) * $size_page;//номер начального элемента
         }
+		
         $q="SELECT
                 tb.*,
                 tb2.name,
@@ -429,12 +464,18 @@ class ProductController extends BaseController{
 				LEFT JOIN ".$this->tb_cat." tb4
                 ON tb4.cat_id=tb3.catalog_id
 				
-				LEFT JOIN catalog tb5
-                ON tb4.cat_id=tb5.id
+				LEFT JOIN catalog tb_cat
+                ON tb4.cat_id=tb_cat.id
+				
+				LEFT JOIN product_status_set pss
+				ON pss.product_id=tb.id
 
-             WHERE tb.id!='0' $where
-             GROUP BY tb.id
-             ORDER BY tb.`sort` ASC, id DESC";
+             WHERE tb.id!='0' $where  
+             GROUP BY tb.id 
+			 $sort
+			 
+            ";
+		
         $sql = $q." LIMIT ".$start_page.", ".$size_page."";
         //echo $sql;
         $count = $this->db->query($q);//кол страниц
@@ -442,7 +483,6 @@ class ProductController extends BaseController{
         {
             $vars['paging'] = Paging::MakePaging($cur_page, $count, $size_page, $dir="admin_");//вызов шаблона для постраничной навигации
         }
-		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");	
         $vars['list'] = $this->db->rows($sql);
 		return $vars;
 	}

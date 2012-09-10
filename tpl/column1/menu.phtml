@@ -12,7 +12,7 @@
 		$pos = strpos($row['url'], "http://");
 		if($pos !== false)$link=$row['url'].'" target="_blank" rel="nofollow';
 		elseif($row['url']=="/")$link=$row['url'];
-		else $link="/".$row['url'];
+		else $link=LINK."/".$row['url'];
 	   
 		if($i<3)
 		{
@@ -36,7 +36,7 @@
 		</ul>
 	</div>
 </div>
-<div id="logo"><a href="/"><img src="/tpl/column1/images/logo.png" alt="" /></a></div>
+<div id="logo"><a href="<?=LINK?>/"><img src="/tpl/column1/images/logo.png" alt="" /></a></div>
 <div id="cart">
 	<div id="bascket"></div>
 	<div class="menu">

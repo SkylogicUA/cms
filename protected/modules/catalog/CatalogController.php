@@ -55,7 +55,7 @@ class CatalogController extends BaseController{
 			{
 				$where="and tb.id in(select product_id from product_status_set where status_id='{$row['id']}')";
 				$vars['curr_cat']['name']=$row['comment'];
-				$data['breadcrumbs'] = array('<a href="/catalog/all">'.$this->translation['catalog'].'</a>', $row['comment']);
+				$data['breadcrumbs'] = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', $row['comment']);
 			}
 			else{
 				$catrow = $this->db->row("SELECT *
@@ -112,7 +112,7 @@ class CatalogController extends BaseController{
         $cur_page = 0;
         $vars['paging'] = '';
 
-        if(isset($this->params['page']))
+        if(isset($this->params['page'])&&(int)$this->params['page'] > 0)
         {
             $cur_page = $this->params['page'];
             $start_page = ($cur_page-1) * $size_page;//номер начального элемента
@@ -132,24 +132,25 @@ class CatalogController extends BaseController{
 		$data['content'] = $view->Render('catalog.phtml', $vars);
 		return $this->Render($data);
 	}
-	
-	
-	
+
 	function query_products($where='')
 	{
 		$q="SELECT
-                tb.*,
+                tb.id,
 				tb.price,
 				tb.discount,
 				tb.cnt,
+				tb.url,
+				tb.discount,
+				tb.status_id,
                 tb2.name,
 				tb2.body_m,
 				tb3.catalog_id,
 				tb4.status_id
 				
-             FROM ".$this->tb_p." tb
+             FROM product tb
 
-				LEFT JOIN ".$this->tb_lang_p." tb2
+				LEFT JOIN ".$this->key_lang."_product tb2
                 ON tb2.product_id=tb.id
 
                 LEFT JOIN product_catalog tb3

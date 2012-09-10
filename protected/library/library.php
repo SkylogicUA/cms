@@ -62,17 +62,22 @@
 	{
 		$key_translation = array();
 		$url=sanitize($_SERVER['REQUEST_URI']);
+		$value_lang = explode("/", $url);//echo $value_lang[1];
+		if((isset($value_lang[1])&&($value_lang[1]!='ajaxadmin'&&$value_lang[1]!='ajax'&&$value_lang[1]!='admin'&&$value_lang[1]!='js'&&$value_lang[1]!='server'&&$value_lang[1]!='captcha'))||!isset($_SESSION['key_lang']))
+		{//echo'sssssss';
+			$_SESSION['key_lang']='ru';
+			
+		}
 		foreach($languages as $row)
 		{
-			$value_lang = explode("/", $url);
+			
 			if(isset($value_lang[1])&&$value_lang[1]==$row['language'])
 			{
 				$_SESSION['key_lang'] = $row['language'];
 				$_SERVER['REQUEST_URI'] = mb_substr($_SERVER['REQUEST_URI'], 3);
 			}
 		}
-		//$_SESSION['key_lang']='ru';
-		if(!isset($_SESSION['key_lang']))$_SESSION['key_lang']='ru';
+		//echo $_SESSION['key_lang'];
 		return $_SESSION['key_lang'];
 	}
 	

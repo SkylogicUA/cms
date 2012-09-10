@@ -49,9 +49,11 @@ class MetaController extends BaseController{
 		$vars['message'] = '';
 		if(isset($_POST['update']))$vars['message'] = $this->save();
 		
-		$vars['edit'] = $this->db->row("SELECT 
-											tb.*
+		$vars['edit'] = $this->db->row("SELECT *
 										FROM ".$this->tb." tb
+										
+										LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										ON tb.id=tb2.meta_id
 										WHERE
 											tb.id=?",
 										array($this->params['edit']));
@@ -72,10 +74,17 @@ class MetaController extends BaseController{
 			$message='';
 			if(isset($row['active'], $row['url'])&&$row['url']!="")
 			{
-                $url=$row['url'].'2';
-				$param = array($url, $row['title'], $row['keywords'], $row['description'], $row['body'], $row['active']);
-				$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `url`=?, `title`=?, `keywords`=?, `description`=?, `body`=?, `active`=?", $param);
-				header("Location: /admin/meta/edit/".$insert_id);
+                $url=$row['url'].'-copy';
+				
+				$id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `url`=?, `active`=?", array($url, $row['active']));
+				$param = array($row['title'], $row['keywords'], $row['description'], $row['body'], $id);
+				foreach($this->language as $lang)
+				{
+					$tb=$lang['language']."_".$this->tb;
+					$this->db->query("INSERT INTO `$tb` SET `title`=?, `keywords`=?, `description`=?, `body`=?, `meta_id`=?", $param);
+				}
+				
+				header("Location: /admin/meta/edit/".$id);
 				//$message.= messageAdmin('Данные успешно клонированы');
 			}
 			//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
@@ -88,11 +97,16 @@ class MetaController extends BaseController{
 		$message='';
 		if(isset($_POST['active'], $_POST['url'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['url']!="")
 		{
-			$url = $_POST['url'];
-
-			$param = array($_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['active']);
-			$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `title`=?, `keywords`=?, `description`=?, `body`=?, `active`=?", $param);
-			$message = $this->checkUrl($this->tb, $url, $insert_id);
+			$param = array($_POST['url'], $_POST['active']);
+			$id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `url`=?, `active`=?", $param);
+			
+			$param = array($_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $id);
+			foreach($this->language as $lang)
+			{
+				$tb=$lang['language']."_".$this->tb;
+				$this->db->query("INSERT INTO `$tb` SET `title`=?, `keywords`=?, `description`=?, `body`=?, `meta_id`=?", $param);
+			}
+			
 			$message.= messageAdmin('Данные успешно добавлены');
 		}
 		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
@@ -116,7 +130,7 @@ class MetaController extends BaseController{
 						//echo $_POST['name'][$i].'<br>';
 						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
 						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);
-						$this->db->query("UPDATE `".$this->tb_lang."` SET `name`=? WHERE ".$this->tb."_id=?", $param);
+						$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", $param);
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
 				}
@@ -125,8 +139,9 @@ class MetaController extends BaseController{
 			else{
 				if(isset($_POST['active'], $_POST['url'], $_POST['id'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body']))
 				{
-					$param = array($_POST['url'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['active'], $_POST['id']);
-					$this->db->query("UPDATE `".$this->tb."` SET `url`=?, `title`=?, `keywords`=?, `description`=?, `body`=?, `active`=? WHERE id=?", $param);
+					$param = array($_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['id']);
+					$this->db->query("UPDATE `".$this->tb."` SET `url`=?, `active`=? WHERE id=?", array($_POST['url'], $_POST['active'], $_POST['id']));
+					$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `title`=?, `keywords`=?, `description`=?, `body`=? WHERE meta_id=?", $param);
 
 					$message .= messageAdmin('Данные успешно сохранены');
 				}

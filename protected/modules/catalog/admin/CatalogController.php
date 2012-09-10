@@ -84,7 +84,7 @@ class CatalogController extends BaseController{
                                           FROM `".$this->tb."` tb
                                           LEFT JOIN `".$this->tb_lang."` tb2
                                           ON tb2.cat_id=tb.id
-                                          WHERE tb.id!=?
+                                          
                                           ORDER BY tb.sort ASC",
         array($this->params['edit']));
 		

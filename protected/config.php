@@ -1,6 +1,6 @@
 <?php
 $DB_Host = 'localhost';
-$DB_Name = 'souvenir';
+$DB_Name = 'skycms';
 $DB_UserName = 'root';
 $DB_Password = '';
 $DB_Charset = 'utf8';

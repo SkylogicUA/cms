@@ -8,7 +8,7 @@ $(document).ready(function(){
 	$("#formID2").validationEngine();
 });
 </script>
-	<form method="post" id="update_order">
+	<form method="post" id="update_order" action="<?=LINK?>/orders/send">
 		<table width="100%" class="orders" cellpadding="0" cellspacing="0">
          <tr>
                 <th>Название</th>
@@ -27,20 +27,20 @@ $(document).ready(function(){
 				$summa2+=$price['cur_price']*$row['amount'];
 
 				echo"<tr>
-						<td style='text-align:left;'><a href='/product/{$row['url']}'>{$row['name']}</a></td>
+						<td style='text-align:left;'><a href='".LINK."/product/{$row['url']}'>{$row['name']}</a></td>
 						<td><input type='text' value='{$row['amount']}' name='amount[]' class='amount' />
 										   <input type='hidden' value='{$row['cart_id']}' name='id[]' />
 						</td>
 						<td>{$price['price']}</td>
 						<td>{$summa}</td>
-						<td><a href='/orders/all/del/{$row['cart_id']}'><img src='/images/del.png' /></a></td>
+						<td><a href='".LINK."/orders/all/del/{$row['cart_id']}'><img src='/images/del.png' /></a></td>
 					</tr>";
 				$i++;	
 			}
 			//$summa = viewPrice($vars['order']['price'], $_SESSION['currency'], 0);
 		?>
 			<tr>
-				<th align='center' colspan="5" style="text-align:right;">Итого: <?=formatPrice($summa2)?></th>
+				<th align='center' colspan="5" style="text-align:right;">Итого: <?=formatPrice($summa2)?><div id="deliver_price"></div></th>
 			</tr>
         </table>
 	</form>	
@@ -75,7 +75,13 @@ $(document).ready(function(){
 				<option value=""></option>';
 				foreach($vars['delivery'] as $row)
 				{
-					echo'<option value="'.$row['name'].'"';if(false)echo' selected';echo'>'.$row['name'].'</option>';
+					$price='';
+					if($row['price']!=0.00)
+					{
+						$price = viewPrice($row['price']);
+						$price=" +".$price['price'];
+					}
+					echo'<option value="'.$row['id'].'"';if(false)echo' selected';echo'>'.$row['name'].' '.$price.'</option>';
 				}
 				echo'</select>';
 			}

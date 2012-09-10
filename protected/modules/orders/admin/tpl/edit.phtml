@@ -88,12 +88,18 @@
 							{
 								echo'<div class="form-field">
 										<label for="page">Способ доставки:</label>
-										<select name="payment">';
+										<select name="delivery">';
 									
 								echo'<option value="0">Выберите вариант доставки</option>';
 								foreach($vars['delivery'] as $row)
 								{
-									echo'<option value="'.$row['id'].'"';if($row['id']==$vars['edit']['delivery'])echo' selected';echo'>'.$row['name'].'</option>';
+									$price='';
+									if($row['price']!=0.00)
+									{
+										$price = viewPrice($row['price']);
+										$price=" +".$price['price'];
+									}
+									echo'<option value="'.$row['id'].'"';if($row['id']==$vars['edit']['delivery'])echo' selected';echo'>'.$row['name'].' '.$price.'</option>';
 								}
 								echo'</select>
 								</div>';

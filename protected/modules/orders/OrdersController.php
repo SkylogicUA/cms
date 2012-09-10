@@ -9,12 +9,12 @@ class OrdersController extends BaseController{
 
     function  __construct($registry, $params)
     {
-		parent::__construct($registry, $params);
         $this->tb = "orders";
 		$this->tb_b = "bascket";
 		$this->tb_p = "product";
 		$this->tb_p_lang = $this->key_lang.'_product';
         $this->registry = $registry;
+        parent::__construct($registry, $params);
     }
 
     public function indexAction()
@@ -77,11 +77,25 @@ class OrdersController extends BaseController{
 		
 		////Delivery
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('delivery'));
-		if($row)$vars['delivery'] = $this->db->rows("SELECT * FROM `delivery` WHERE active=? ORDER  BY sort ASC", array(1));
+		if($row)$vars['delivery'] = $this->db->rows("SELECT * 
+													 FROM `delivery` tb
+													 
+													 LEFT JOIN ".$this->key_lang."_delivery tb2
+										 			 ON tb.id=tb2.delivery_id
+													 
+													 WHERE active=? 
+													 ORDER  BY sort ASC", array(1));
 		
 		////Payment
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('payment'));
-		if($row)$vars['payment'] = $this->db->rows("SELECT * FROM `payment` WHERE active=? ORDER  BY sort ASC", array(1));
+		if($row)$vars['payment'] = $this->db->rows("SELECT * 
+													FROM `payment` tb
+													
+													LEFT JOIN ".$this->key_lang."_payment tb2
+										 			ON tb.id=tb2.payment_id
+													 
+													WHERE active=? 
+													ORDER  BY sort ASC", array(1));
 
 		
 		if(isset($_POST['name'])&&count($vars['product'])!=0)
@@ -172,8 +186,12 @@ class OrdersController extends BaseController{
 				Адрес: {$_POST['address']}<br />";
 		if(isset($_POST['delivery']))
 		{
-			$text.="Способ доставки: {$_POST['delivery']}<br />";
-			$this->db->query("UPDATE orders SET delivery=? WHERE id=?", array($_POST['delivery'], $order_id));	
+			$row = $this->db->row("SELECT * FROM delivery WHERE id=?", array($_POST['delivery']));
+			$price = viewPrice($row['price']);
+			$summa4 =$row['price'];	
+			$summa2 =$price['price'];	
+			$text.="Способ доставки: {$row['name']}<br />";
+			$this->db->query("UPDATE orders SET delivery=? WHERE id=?", array($row['id'], $order_id));	
 		}
 		if(isset($_POST['payment']))
 		{
@@ -266,7 +284,7 @@ class OrdersController extends BaseController{
 						$text // текст письма
 						);//echo $text;					
 
-		$this->db->query("DELETE FROM `bascket` WHERE `session_id`=?", array(session_id()));
+		//$this->db->query("DELETE FROM `bascket` WHERE `session_id`=?", array(session_id()));
 	}
 }
 ?>

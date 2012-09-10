@@ -1,13 +1,13 @@
 <div class="items-container multi-level">
     <table width="100%" cellspacing="0" cellpadding="0" border="0" class="table table-fixed hidden-inputs tb_sort">
-        <tr class="noDrop">
-        	<th width="25"></th>
+        <tr>
             <th width="20" class="center"><input type="checkbox" class="check_all2" title="Отметить/снять все" value="Y" name="check_all"></th>
             <th width="50">ID</th>
             <th width="80" class="center">Фото</th>
             <th>Название</th>
 			<th width="150">Каталог</th>
 			<th width="100">Цена (грн.)</th>
+            <th width="55">Сорт.</th>
             <th width="100">Статус</th>
             <th width="180">&nbsp;</th>
         </tr>
@@ -21,8 +21,7 @@
             if(file_exists($dir[0]."{$row['id']}_s.jpg"))$src="/".$dir[0]."{$row['id']}_s.jpg";
             else $src="/tpl/admin/images/no_image.gif";
 
-           echo'<tr id="sort'.$row['id'].'">
-					<td class="move"></td>
+           echo'<tr>
 					<td class="center"><input type="checkbox" class="check-item" value="'.$row['id'].'" name="id[]" /></td>
 					<td><span>'.$row['id'].'</span></td>
 					<td><a href="/admin/'.$vars['action'].'/edit/'.$row['id'].'"><img src="'.$src.'" width="60" /></a></td>
@@ -34,6 +33,7 @@
 					</td>
 					<td>'.$row['catalog'].'</td>
 					<td><input type="text" value="'.$row['price'].'" name="price[]" class="input-text" style="width:90px;" /></td>
+					<td><input type="text" value="'.$row['sort'].'" name="sort[]" class="input-text" style="width:30px;" /></td>
 					<td><input type="hidden" value="'.$row['id'].'" name="save_id[]" />
 						<div class="select-popup-container active_status" id="active'.$row['id'].'">'.$active.' </div>
 					</td>

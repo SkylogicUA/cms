@@ -16,18 +16,20 @@ class Router{
 			$rest = mb_substr($uri, -1 );
 			if($rest=='/')$uri=mb_substr($uri, 0, strlen($uri)-1, 'UTF-8');
 		}
-		$pos=stripos($uri,'?qqfile=');
-		if ($pos === false) {
-			
-		}else{   $uri = mb_substr($uri, 0,$pos );  }
+		
+		$pos = stripos($uri,'?qqfile=');
+		if($pos !== false)
+		{
+			$uri = mb_substr($uri, 0, $pos);
+		}
 		 
-
 		if(!preg_match('/^[-a-z0-9\/]*$/',$uri)) $err = true;
 		$this->uri_arr=explode("/",$uri);
 		
 		//удаляем первый пустой елемент
 		array_splice($this->uri_arr, 0, 1);
-		if(isset($err)) {
+		if(isset($err))
+		{
 			$this->uri_arr[0] = 'Error';
 			$this->uri_arr[1] = 'index';
 		}

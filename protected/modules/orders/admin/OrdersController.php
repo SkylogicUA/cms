@@ -9,10 +9,10 @@ class OrdersController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
-		parent::__construct($registry, $params);
 		$this->tb = "orders";
 		$this->name = "Заказы";
 		$this->registry = $registry;
+		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()
@@ -145,6 +145,15 @@ class OrdersController extends BaseController{
 					/////Update orders product
 					$total=0;
 					$amount=0;
+					
+					if(isset($_POST['delivery']))
+					{
+						$row = $this->db->row("SELECT * FROM delivery WHERE id=?", array($_POST['delivery']));
+						$total =$row['price'];	
+						$this->db->query("UPDATE orders SET delivery=? WHERE id=?", array($_POST['delivery'], $_POST['id']));	
+					}
+
+					if(isset($_POST['payment']))$this->db->query("UPDATE orders SET payment=? WHERE id=?", array($_POST['payment'], $_POST['id']));
                     for($i=0; $i<=count($_POST['product_id']) - 1; $i++)
 					{
 						/*if($_POST['discount'][$i]!=0)$sum=discount($_POST['discount'][$i], $sum=$_POST['price'][$i]*$_POST['amount'][$i]);
@@ -190,8 +199,7 @@ class OrdersController extends BaseController{
 							$amount,
                             $_POST['id'])
                     );
-					if(isset($_POST['delivery']))$this->db->query("UPDATE orders SET delivery=? WHERE id=?", array($_POST['delivery'], $_POST['id']));	
-					if(isset($_POST['payment']))$this->db->query("UPDATE orders SET payment=? WHERE id=?", array($_POST['payment'], $_POST['id']));
+					
 					
                     $message.= messageAdmin('Данные успешно сохранены');
                 }

@@ -2,7 +2,7 @@
 <?=$vars['message']?>
 <div>
 	<div class="clear mainbox-title-container">
-		<h1 class="mainbox-title">Новый заказ:&nbsp;</h1>
+		<h1 class="mainbox-title">Новая страница:&nbsp;</h1>
 	</div>
 	<div class="extra-tools">
 		
@@ -56,7 +56,13 @@
 								echo'<option value="0">Выберите вариант доставки</option>';
 								foreach($vars['delivery'] as $row)
 								{
-									echo'<option value="'.$row['id'].'">'.$row['name'].'</option>';
+									$price='';
+									if($row['price']!=0.00)
+									{
+										$price = viewPrice($row['price']);
+										$price=" +".$price['price'];
+									}
+									echo'<option value="'.$row['id'].'">'.$row['name'].' '.$price.'</option>';
 								}
 								echo'</select>
 								</div>';

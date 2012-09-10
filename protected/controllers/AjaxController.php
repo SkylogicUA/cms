@@ -17,6 +17,20 @@ class AjaxController extends BaseController{
 		
 	}
 
+	//////Delivery price
+	function deliverypriceAction()
+	{
+		if(isset($_POST['id']))
+		{
+			$row=$this->db->row("SELECT * FROM `delivery` WHERE `id`=?", array($_POST['id']));
+			if($row['price']!=0.00)
+			{
+				$price = viewPrice($row['price']);
+				echo"+ ".$price['price'];
+			}	
+		}
+	}
+	
 	//////Put in shop cart
 	function incartAction()
 	{

@@ -9,7 +9,7 @@
             foreach($vars['slider'] as $row)
             {
 				if($row['url']=='')$link='javascript:void(0);';
-				else $link=$row['url'];
+				else $link=LINK.$row['url'];
                 echo'<a href="'.$link.'"><img src="/files/slider/'.$row['id'].'.jpg" alt="'.$row['name'].'" title="'.$row['name'].'" id="wows'.$i.'"/></a>';
                 $i++;
             }

@@ -51,9 +51,8 @@ class SliderController extends BaseController{
 		$message='';
 		if(isset($_POST['name'], $_POST['url']))
 		{
-            $param = array($_POST['name'], $_POST['url']);
-            $id=$this->db->insert_id("INSERT INTO `".$this->tb."` SET `name`=?, url=?", $param);
-
+            $id=$this->db->insert_id("INSERT INTO `".$this->tb."` SET url=?, active=?", array($_POST['url'], $_POST['active']));
+			$this->db->query("INSERT INTO `".$this->tb_lang."` SET `name`=?, slider_id=?", array($_POST['name'], $id));
             if(isset($_FILES['photo']['tmp_name'])&&$_FILES['photo']['tmp_name']!="")
             {
                 $dir="files/slider/";
@@ -78,8 +77,9 @@ class SliderController extends BaseController{
 				{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
-                        $param = array($_POST['name'][$i], $_POST['url'][$i], $_POST['save_id'][$i]);
-                        $this->db->query("UPDATE `".$this->tb."` SET `name`=?, `url`=? WHERE id=?", $param);
+                        $param = array($_POST['url'][$i], $_POST['save_id'][$i]);
+                        $this->db->query("UPDATE `".$this->tb."` SET `url`=? WHERE id=?", $param);
+						$this->db->query("UPDATE `".$this->tb_lang."` SET `name`=? WHERE slider_id=?", array($_POST['name'][$i], $_POST['save_id'][$i]));
 
                         if(isset($_FILES['photo']['tmp_name'][$i])&&$_FILES['photo']['tmp_name'][$i]!="")
                         {
@@ -123,8 +123,11 @@ class SliderController extends BaseController{
 	private function listView()
 	{
 		$vars['list'] = $this->db->rows("SELECT 
-											tb.*
+											tb.*, tb2.name
 										 FROM ".$this->tb." tb
+										 
+										 LEFT JOIN ".$this->tb_lang." tb2
+										 ON tb.id=tb2.slider_id
 											ORDER BY tb.`sort` ASC");
 		return $vars;
 	}

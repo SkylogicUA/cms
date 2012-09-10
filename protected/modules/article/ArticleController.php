@@ -71,7 +71,7 @@ class ArticleController extends BaseController{
 										   WHERE tb1.url!=? AND tb1.active=?
 										   LIMIT 10",
 			   array($this->params[$this->tb], 1));
-			$data['breadcrumbs'] = array('<a href="/news/all">'.$this->translation['news'].'</a>', $vars['news']['name']);
+			$data['breadcrumbs'] = array('<a href="'.LINK.'/news/all">'.$this->translation['news'].'</a>', $vars['news']['name']);
 			$data['meta'] = $vars['news'];
 		}
 		

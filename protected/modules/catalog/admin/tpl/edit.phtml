@@ -37,7 +37,7 @@
                                     {
                                         echo"<option value='{$row['id']}'";if($row['id']==$vars['edit']['sub'])echo" selected";echo">{$row['name']}</option>";
                                         foreach($vars['catalog'] as $row2)
-                                        {
+                                        {echo"{$row['id']}=={$row2['sub']}-----";
                                             if($row['id']==$row2['sub'])
                                             {
                                                 echo"<option value='{$row2['id']}'";if($row2['id']==$vars['edit']['sub'])echo" selected";echo">&nbsp;&nbsp;&nbsp;{$row2['name']}</option>";

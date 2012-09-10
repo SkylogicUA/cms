@@ -7,6 +7,7 @@
 	
 	# ini_set()
 	ini_set('include_path', $path);
+	ini_set('session.use_trans_sid', false);
 	header("Content-Type: text/html; charset=utf-8");
 	session_start();
 
@@ -35,6 +36,10 @@
 	$db = new PDOchild($registry);//echo var_dump($registry['db_settings']);
 	$language = $db->rows("SELECT * FROM `language`");
 	$registry->set('key_lang', getUri($language));
+	//echo '<br />end '.$_SESSION['key_lang'];
+
+	if($_SESSION['key_lang']=="ru")define('LINK', '');
+	else define('LINK', '/'.$_SESSION['key_lang']);
 	
 	# 
 	$parser = new Parser();

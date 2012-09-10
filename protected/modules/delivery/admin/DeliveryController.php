@@ -9,11 +9,12 @@ class DeliveryController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
-		parent::__construct($registry, $params);
 		$this->tb = "delivery";
+		$this->tb_lang = $this->key_lang.'_'.$this->tb;
         $this->name = "Способ доставки";
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
+		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()
@@ -48,8 +49,8 @@ class DeliveryController extends BaseController{
 		$message='';
 		if(isset($_POST['name']))
 		{
-            $param = array($_POST['name'], $_POST['active']);
-            $this->db->query("INSERT INTO `".$this->tb."` SET `name`=?, active=?", $param);
+            $id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `price`=?, active=?", array($_POST['price'], $_POST['active']));
+			$this->db->query("INSERT INTO `".$this->tb_lang."` SET `name`=?, `delivery_id`=?", array($_POST['name'], $id));
 			$message.= messageAdmin('Данные успешно добавлены');
 		}
 		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
@@ -70,8 +71,8 @@ class DeliveryController extends BaseController{
 				{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
-						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);
-                        $this->db->query("UPDATE `".$this->tb."` SET `name`=? WHERE id=?", $param);
+                        $this->db->query("UPDATE `".$this->tb."` SET price=? WHERE id=?", array($_POST['price'][$i], $_POST['save_id'][$i]));
+						$this->db->query("UPDATE `".$this->tb_lang."` SET `name`=? WHERE delivery_id=?", array($_POST['name'][$i], $_POST['save_id'][$i]));
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
 					if(isset($_POST['base']))$this->db->query("UPDATE `".$this->tb."` SET base=? WHERE id=?", array(1, $_POST['base']));
@@ -108,8 +109,11 @@ class DeliveryController extends BaseController{
 	private function listView()
 	{
 		$vars['list'] = $this->db->rows("SELECT 
-											tb.*
+											tb.*, tb2.name
 										 FROM ".$this->tb." tb
+										 
+										 LEFT JOIN ".$this->tb_lang." tb2
+										 ON tb.id=tb2.delivery_id
 											ORDER BY tb.`sort` ASC");
 		return $vars;
 	}

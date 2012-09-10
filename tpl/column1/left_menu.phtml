@@ -8,7 +8,7 @@
 				{
 					$pos = strpos($row['url'], "http://");
 					if($pos !== false)$link=$row['url'].'" target="_blank" rel="nofollow';
-					else $link="/catalog/".$row['url'];
+					else $link=LINK."/catalog/".$row['url'];
 					echo'<li><a href="'.$link.'">'.$row['name'].'</a>';
 					
 					if(isset($vars['open_link']['level_1'])&&$row['id']==$vars['open_link']['level_1'])
@@ -20,7 +20,7 @@
 							{
 								$pos = strpos($row2['url'], "http://");
 								if($pos !== false)$link=$row2['url'].'" target="_blank" rel="nofollow';
-								else $link="/catalog/".$row2['url'];
+								else $link=LINK."/catalog/".$row2['url'];
 								
 								if(isset($vars['cur_product'])&&$vars['cur_product']==$row2['id'])$class='class="cur_product"';
 								else $class='';
@@ -35,7 +35,7 @@
 										{
 											$pos = strpos($row3['url'], "http://");
 											if($pos !== false)$link=$row3['url'].'" target="_blank" rel="nofollow';
-											else $link="/catalog/".$row3['url'];
+											else $link=LINK."/catalog/".$row3['url'];
 											
 											if(isset($vars['cur_product'])&&$vars['cur_product']==$row3['id'])$class='class="cur_product"';
 											else $class='';

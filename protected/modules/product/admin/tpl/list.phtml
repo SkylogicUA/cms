@@ -13,14 +13,14 @@
         <table cellspacing="0" border="0" class="search-header">
             <tr>
                 <td class="nowrap search-field">
-                    <label>Найти:<?=$_SESSION['search']['word']?></label>
+                    <label>Найти: <?=$_SESSION['search']['word']?></label>
                     <div class="break">
                         <input type="text" class="search-input-text" value="<?=$_SESSION['search']['word']?>" size="20" name="word" />
                         <input type="image" title="Поиск" alt="Поиск" class="search-go" src="/tpl/admin/images/search_go.gif">&nbsp;
                     </div>
                 </td>
                 <td class="nowrap search-field">
-                    <label>Цена&nbsp;:</label>
+                    <label>Цена:</label>
                     <div class="break">
                         <input type="text" class="input-text-price" onfocus="this.select();" value="<?=$_SESSION['search']['price_from']?>" size="1" name="price_from">&nbsp;&ndash;&nbsp;
                         <input type="text" class="input-text-price" onfocus="this.select();" value="<?=$_SESSION['search']['price_to']?>" name="price_to" size="1">
@@ -29,12 +29,12 @@
                 <td class="nowrap search-field">
                     <label>Поиск в категории:</label>
                     <div class="break clear correct-picker-but">
-                        <select name="cat_id">
+                        <select name="cat_id" style="width:200px">
                             <option value="0">- Все категории -</option>
                             <?php
                                 foreach($vars['catalog'] as $row)
                                 {
-									if($row['sub']==0)
+                                    if($row['sub']==0)
 									{
 										echo"<option value='{$row['id']}'";if($row['id']==$_SESSION['search']['cat_id'])echo" selected";echo">{$row['name']}</option>";
 										foreach($vars['catalog'] as $row2)
@@ -53,28 +53,61 @@
 										}
 									}
                                 }
+								
+								foreach($vars['status'] as $row)
+                                {
+									echo"<option value='status-{$row['id']}'";if('status-'.$row['id']==$_SESSION['search']['cat_id'])echo" selected='selected'";echo">{$row['name']}</option>";
+								}
                             ?>
                         </select>
                     </div>
                 </td>
+                <td class="nowrap search-field">
+                    <label>Сортировать:</label>
+                     <div class="break clear correct-picker-but">
+                        <select name="sort" style="width:120px">
+						
+                            <option value="nul" <?=$_SESSION['search']['sort']=='nul'?'selected="selected"':'';?> >- по умолчанию</option>
+							<option value="price asc" <?=$_SESSION['search']['sort']=='price asc'?'selected="selected"':'';?> >- по цене, сначала дешевые</option>
+                            <option value="price desc" <?=$_SESSION['search']['sort']=='price desc'?'selected="selected"':'';?> >- по цене, сначала дорогие</option>
+							<option value="name asc" <?=$_SESSION['search']['sort']=='name asc'?'selected="selected"':'';?> >- по наименованию: А-Я</option>
+                            <option value="name desc" <?=$_SESSION['search']['sort']=='name desc'?'selected="selected"':'';?> >- по наименованию: Я-А</option>
+							<option value="catalog" <?=$_SESSION['search']['sort']=='catalog'?'selected="selected"':'';?> >- по каталогу</option>
+                        </select>
+                    </div>
+                </td>
+                <td class="nowrap search-field">
+                    <label>Выводить по:</label>
+                     <div class="break clear correct-picker-but">
+                        <select name="onpage" style="width:60px">
+                            <option value="10" <?=$_SESSION['search']['onpage']==10?'selected="selected"':'';?> >10</option>
+                            <option value="20" <?=$_SESSION['search']['onpage']==20?'selected="selected"':'';?> >20</option>
+                            <option value="50" <?=$_SESSION['search']['onpage']==50?'selected="selected"':'';?> >50</option>
+                            <option value="100" <?=$_SESSION['search']['onpage']==100?'selected="selected"':'';?> >100</option>
+                        </select>
+                    </div>
+                </td>
                 <td class="buttons-container">
-					<span class="submit-button "><input type="submit" value="Поиск" name="dispatch[products.manage]"></span>
+					 <span class="submit-button "><input type="submit" value="Поиск" name="dispatch[products.manage]"></span>
                     <span class="submit-button "><input type="submit" value="Очистить" name="clear"></span>
 					
                 </td>
             </tr>
+			 
             </table>
         </form>
+		
         </div>
 		</div>
 		<div id="content_manage_users">
-			<form name="userlist_form" method="post" action="/admin/<?=$vars['action']?>/update">
+			<form name="userlist_form" method="post" action="/admin/<?=$vars['action'].$vars['URL'];?>/update/">
 				<div id="pagination_contents">
 					<?php echo $vars['list'];?>
-				</div>
-				<div class="buttons-container buttons-bg">
-					<div class="cm-buttons-placeholder">
-						<div class="float-left">
+				</div> 
+				
+				<div class="buttons-container cm-toggle-button buttons-bg">
+					<div class="cm-buttons-floating hidden" style="display: block;">
+						<div class="cm-buttons-placeholder">
 							<span class="submit-button cm-button-main">
 								<input type="submit" value="Сохранить" name="update" class="">
 							</span>или
