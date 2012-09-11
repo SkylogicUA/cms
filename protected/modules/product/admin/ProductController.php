@@ -83,6 +83,18 @@ class ProductController extends BaseController{
 
 											  GROUP BY tb.cat_id
 											  ORDER BY tb3.sort ASC");
+											  
+		//////////Brends set
+		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('brend'));
+		if($row)
+		{
+			$vars['brend'] = $this->db->rows("SELECT tb.id, tb2.name
+												  FROM `brend` tb
+												  LEFT JOIN `".$this->key_lang."_brend` tb2
+												  ON tb2.brend_id=tb.id
+												  ORDER BY tb.sort ASC");						  
+		}	
+		
 		$vars['status'] = $this->db->rows("SELECT * FROM `product_status`");	
 		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");	
 		$vars['height']=$this->height;	
@@ -140,6 +152,17 @@ class ProductController extends BaseController{
 			$vars['params_set'] = $this->db->rows("SELECT * FROM `params_product` WHERE product_id=?", array($vars['edit']['id']));	
 			$vars['params'] = $view->Render('params.phtml', $vars);								  
 		}	
+		
+		//////////Brends set
+		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('brend'));
+		if($row)
+		{
+			$vars['brend'] = $this->db->rows("SELECT tb.id, tb2.name
+												  FROM `brend` tb
+												  LEFT JOIN `".$this->key_lang."_brend` tb2
+												  ON tb2.brend_id=tb.id
+												  ORDER BY tb.sort ASC");						  
+		}	
 
 		////Extra photo
         $vars['photo'] = $this->db->rows("SELECT * FROM `product_photo` tb
@@ -188,24 +211,27 @@ class ProductController extends BaseController{
 		{
 			if($_POST['url']=='')$url = translit($_POST['name']);
 			else $url = translit($_POST['url']);
-
+			
+			$brend="";
+			if(isset($_POST['brend_id']))$brend=",brend_id='{$_POST['brend_id']}'";
 			$insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` 
 											   SET 
-											   		`brend_id`=?, 
 													`active`=?, 
 													`price`=?, 
 													`discount`=?,
 													`cnt`=?,
 													`code`=?, 
-													`date_add`=?", 
-											   array(0, 
+													`date_add`=?
+													$brend
+													", 
+											   array(
 											   		 $_POST['active'],
 													 $_POST['price'],
 													 $_POST['discount'],
 													 $_POST['cnt'],
 													 $_POST['code'],
 													 date("Y-m-d H:i:s")));
-													 
+									 
 			//Language
 			foreach($this->language as $lang)
 			{
@@ -328,6 +354,9 @@ class ProductController extends BaseController{
 
 					$message = $this->checkUrl($this->tb, $url, $_POST['id']);
 					
+					$brend="";
+					if(isset($_POST['brend_id']))$brend=",brend_id='{$_POST['brend_id']}'";
+			
 					$param = array($_POST['code'], $_POST['price'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['active'], $_POST['cnt'], $_POST['discount'], $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb_lang."` tb1, ".$this->tb." tb2
 					                  SET
@@ -341,6 +370,7 @@ class ProductController extends BaseController{
 											tb2.active=?,
 											tb2.cnt=?,
 											tb2.discount=?
+											$brend
 											
 					                  WHERE
 									  		tb1.product_id=tb2.id AND
@@ -473,7 +503,6 @@ class ProductController extends BaseController{
              WHERE tb.id!='0' $where  
              GROUP BY tb.id 
 			 $sort
-			 
             ";
 		
         $sql = $q." LIMIT ".$start_page.", ".$size_page."";

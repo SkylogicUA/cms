@@ -84,7 +84,22 @@
                             ?>
 						</div>
 					</fieldset>
-					
+					<?
+						if(isset($vars['brend']))
+						{
+							echo'<fieldset>
+								 <h2 class="subheader">Бренды</h2>
+								 <div style="margin-left:15px; max-height:300px; overflow:auto;">
+								 <select name="brend_id" style="width:150px;">
+								 	<option value="0">Выберите бренд...</option>';
+							foreach($vars['brend'] as $row)
+							{
+								echo'<option value="'.$row['id'].'">'.$row['name'].'</option>';
+							}
+							echo'</select></div>
+								 </fieldset>';	
+						}
+					?>
 					<fieldset>
 						<h2 class="subheader">Настройки</h2>
 						<div style="margin-left:15px;">
