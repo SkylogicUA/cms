@@ -49,11 +49,10 @@ class MenuController extends BaseController
 	{
 		$vars['message'] = '';
 		if(isset($_POST['add']))$vars['message'] = $this->add(); 
-		$vars['sel_catalog'] =$this->select_catal($this->tb,$_SESSION['sort_menu']); 
+		$vars['select_tree'] =$this->select_tree($this->tb,$_SESSION['sort_menu']); 
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('add.phtml', $vars);
 		return $this->Render($data);
-
 	}
 
 	public function editAction()
