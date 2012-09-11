@@ -2,7 +2,7 @@
 /*
  * вывод каталога компаний и их данных
  */
-class PaymentController extends BaseController{
+class StatusController extends BaseController{
 	
 	protected $params;
 	protected $db;
@@ -10,10 +10,10 @@ class PaymentController extends BaseController{
 	function  __construct($registry, $params)
 	{
 		parent::__construct($registry, $params);
-		$this->tb = "payment";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
-        $this->name = "Способ оплаты";
+		$this->tb = "product_status";
+        $this->name = "Статусы товаров";
 		$this->registry = $registry;
+		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
 	}
 
 	public function indexAction()
@@ -46,19 +46,22 @@ class PaymentController extends BaseController{
 	private function add()
 	{
 		$message='';
-		if(isset($_POST['name']))
+		if(isset($_POST['name'], $_POST['comment'])&&$_POST['name']!="")
 		{
-            $param = array($_POST['name'], $_POST['active']);
-            $id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET active=?", array($_POST['active']));
+			if($_POST['url']=='')$url = translit($_POST['name']);
+			else $url = translit($_POST['url']);
+
+            $id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET comment=?", array($_POST['comment']));
 			
+			$message = $this->checkUrl($this->tb, $url, $id);
 			foreach($this->language as $lang)
 			{
 				$tb=$lang['language']."_".$this->tb;
-				$this->db->query("INSERT INTO `$tb` SET `name`=?, `payment_id`=?", array($_POST['name'], $id));
+				$this->db->query("INSERT INTO `$tb` SET `name`=?, `".$this->tb."_id`=?", array($_POST['name'], $id));
 			}
 			$message.= messageAdmin('Данные успешно добавлены');
 		}
-		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
+		else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
 		return $message;
 	}
 	
@@ -71,16 +74,18 @@ class PaymentController extends BaseController{
 		{
 			if(isset($_POST['save_id'])&&is_array($_POST['save_id']))
 			{
-				
-				if(isset($_POST['save_id'], $_POST['name']))
+				if(isset($_POST['save_id'], $_POST['name'], $_POST['url'], $_POST['comment']))
 				{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
-						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);
-                        $this->db->query("UPDATE `".$this->tb_lang."` SET `name`=? WHERE payment_id=?", $param);
+						if($_POST['url'][$i]=='')$url = translit($_POST['name'][$i]);
+						else $url = translit($_POST['url'][$i]);
+						
+						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
+                        $this->db->query("UPDATE `".$this->tb."` SET `comment`=? WHERE id=?", array($_POST['comment'][$i], $_POST['save_id'][$i]));
+						$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", array($_POST['name'][$i], $_POST['save_id'][$i]));
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
-					if(isset($_POST['base']))$this->db->query("UPDATE `".$this->tb."` SET base=? WHERE id=?", array(1, $_POST['base']));
 				}
 				else $message .= messageAdmin('При сохранение произошли ошибки', 'error');
 			}
@@ -113,13 +118,13 @@ class PaymentController extends BaseController{
 	
 	private function listView()
 	{
-		$vars['list'] = $this->db->rows("SELECT 
-											tb.*, tb2.name
+		$vars['list'] = $this->db->rows("SELECT *
 										 FROM ".$this->tb." tb
 										 
-										 LEFT JOIN ".$this->tb_lang." tb2
-										 ON tb.id=tb2.payment_id
-											ORDER BY tb.`sort` ASC");
+										 LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										 ON tb.id=tb2.".$this->tb."_id 
+										 
+										 ORDER BY tb.`id` DESC");
 		return $vars;
 	}
 }

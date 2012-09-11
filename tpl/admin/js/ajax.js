@@ -17,7 +17,7 @@ $(document).ready(function(){
 		$.ajax({type:"POST",url:"/ajaxadmin/active",dataType:'json', data:dataString,cache:false,success:
 		function(data)
 		{
-			if(!data.access)$('#'+id).html(data.active);//alert('asd');
+			if(!data.access)$('#'+id).html(data.active);//alert(tb);
 			$('#message').html(data.message);	
 			autoHide();
 		}

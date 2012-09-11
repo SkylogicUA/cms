@@ -138,7 +138,7 @@ class Captcha3d
 	private function randomtext($len = 3)
 	{
 		$this->session();
-		$str = 'QWERTYUIOPASDFGHJKLZXCVBNM1234567890';
+		$str = '1234567890';
 		$rerult = '';
 		for($i = 0; $i < $len; $i++)
 		{

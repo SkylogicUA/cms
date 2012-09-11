@@ -50,12 +50,16 @@ class CatalogController extends BaseController{
 		#Start filters
 		if(isset($this->params['catalog'])&&$this->params['catalog']!="search"&&$this->params['catalog']!="all")
 		{	
-			$row=$this->db->row("select * from product_status where url='{$this->params['catalog']}'");
+			$row=$this->db->row("select * from product_status ps
+								 
+								 LEFT JOIN ".$this->key_lang."_product_status lps
+								 ON lps.product_status_id=ps.id
+								 where url='{$this->params['catalog']}'");
 			if($row)
 			{
 				$where="and tb.id in(select product_id from product_status_set where status_id='{$row['id']}')";
 				$vars['curr_cat']['name']=$row['comment'];
-				$data['breadcrumbs'] = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', $row['comment']);
+				$data['breadcrumbs'] = array('<a href="'.LINK.'/catalog/all">'.$this->translation['catalog'].'</a>', $row['name']);
 			}
 			else{
 				$catrow = $this->db->row("SELECT *

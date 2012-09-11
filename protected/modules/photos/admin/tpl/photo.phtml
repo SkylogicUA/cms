@@ -2,7 +2,7 @@
     $(document).ready(function() {
         $("#uploadify").uploadify({
             'uploader'       : '/files/flash/uploadify.swf',
-            'script'         : '/ajax/uploadify',
+            'script'         : '/ajaxadmin/uploadify',
             'cancelImg'      : '/tpl/admin/images/cancel.png',
             'folder'         : '/tpl/admin/images',
             'scriptData'	 : {'id':'<?=$vars['edit']['id']?>'},
@@ -14,7 +14,7 @@
                 $.ajax
                     ({
                         type: "POST",
-                        url: "/ajax/photos",
+                        url: "/ajaxadmin/photos",
                         data: dataString,
                         cache: false,
                         success: function(html)

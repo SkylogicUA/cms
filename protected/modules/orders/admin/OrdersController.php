@@ -79,11 +79,19 @@ class OrdersController extends BaseController{
 		$vars['list'] = $this->listView();
 		////Delivery
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('delivery'));
-		if($row)$vars['delivery'] = $this->db->rows("SELECT * FROM `delivery` WHERE active=? ORDER  BY sort ASC", array(1));
+		if($row)$vars['delivery'] = $this->db->rows("SELECT * FROM `delivery` tb1
+													 
+													 LEFT JOIN ".$this->key_lang."_delivery tb2
+													 ON tb1.id=tb2.delivery_id
+													 WHERE active=? ORDER  BY sort ASC", array(1));
 		
 		////Payment
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('payment'));
-		if($row)$vars['payment'] = $this->db->rows("SELECT * FROM `payment` WHERE active=? ORDER  BY sort ASC", array(1));
+		if($row)$vars['payment'] = $this->db->rows("SELECT * FROM `payment` tb1 
+													
+													LEFT JOIN ".$this->key_lang."_payment tb2
+													ON tb1.id=tb2.payment_id
+													WHERE active=? ORDER  BY sort ASC", array(1));
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('edit.phtml', $vars);
 		return $this->Render($data);

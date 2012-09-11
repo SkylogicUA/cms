@@ -46,7 +46,7 @@ class ArticleController extends BaseController{
 				$vars['paging'] = Paging::MakePaging($cur_page, $count, $size_page);//вызов шаблона для постраничной навигации
 			}
 			$vars['list'] = $this->db->rows($sql, array(1));
-			$data['breadcrumbs'] = array($this->translation['news']);
+			$data['breadcrumbs'] = array($this->translation['article']);
 		}
 		else{
 		   $vars['news'] = $this->db->row("SELECT *
@@ -71,7 +71,7 @@ class ArticleController extends BaseController{
 										   WHERE tb1.url!=? AND tb1.active=?
 										   LIMIT 10",
 			   array($this->params[$this->tb], 1));
-			$data['breadcrumbs'] = array('<a href="'.LINK.'/news/all">'.$this->translation['news'].'</a>', $vars['news']['name']);
+			$data['breadcrumbs'] = array('<a href="'.LINK.'/article/all">'.$this->translation['article'].'</a>', $vars['news']['name']);
 			$data['meta'] = $vars['news'];
 		}
 		

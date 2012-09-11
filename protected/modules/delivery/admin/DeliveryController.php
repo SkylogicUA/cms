@@ -9,12 +9,11 @@ class DeliveryController extends BaseController{
 	
 	function  __construct($registry, $params)
 	{
+		parent::__construct($registry, $params);
 		$this->tb = "delivery";
 		$this->tb_lang = $this->key_lang.'_'.$this->tb;
         $this->name = "Способ доставки";
 		$this->registry = $registry;
-		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
-		parent::__construct($registry, $params);
 	}
 
 	public function indexAction()
@@ -50,7 +49,12 @@ class DeliveryController extends BaseController{
 		if(isset($_POST['name']))
 		{
             $id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `price`=?, active=?", array($_POST['price'], $_POST['active']));
-			$this->db->query("INSERT INTO `".$this->tb_lang."` SET `name`=?, `delivery_id`=?", array($_POST['name'], $id));
+			
+			foreach($this->language as $lang)
+			{
+				$tb=$lang['language']."_".$this->tb;
+				$this->db->query("INSERT INTO `$tb` SET `name`=?, `delivery_id`=?", array($_POST['name'], $id));
+			}
 			$message.= messageAdmin('Данные успешно добавлены');
 		}
 		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
