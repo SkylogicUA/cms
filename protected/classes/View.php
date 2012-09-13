@@ -292,7 +292,7 @@
                     <link rel="stylesheet" type="text/css" media="screen" href="/js/editors/elfinder/css/elfinder.css">
                             <script type="text/javascript" src="/js/editors/elfinder/js/elfinder.min.js"></script>
                             <script type="text/javascript" src="/js/editors/elfinder/js/i18n/elfinder.ru.js"></script>
-                            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+                            <script src="/js/editors/elfinder/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"></script>
                             <link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" />
 					<script type="text/javascript">
 						tinyMCE.init({

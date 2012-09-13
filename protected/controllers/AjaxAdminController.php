@@ -25,7 +25,9 @@ class AjaxAdminController extends BaseController{
 			if($_POST['tb']=='meta_data')$tb='meta';
 			else $tb=$_POST['tb'];
 			$data=array();
-			$data['message'] = $this->checkAccess('edit', $tb);//echo $row['controller'];
+			$data['message'] ='';			
+			if(!$this->checkAccess('edit', $tb))$data['message'] = messageAdmin('Отказано в доступе', 'error');
+
 			if($data['message']=='')
 			{
 				$_POST['id']=str_replace("active", "", $_POST['id']);
@@ -55,7 +57,9 @@ class AjaxAdminController extends BaseController{
 			elseif($_POST['tb']=='info_blocks')$tb='info';
 			else $tb=$_POST['tb'];
 			$data=array();
-			$data['message'] = $this->checkAccess('edit', $tb);//echo $data['access'];
+			$data['message'] ='';			
+			if(!$this->checkAccess('edit', $tb))$data['message'] = messageAdmin('Отказано в доступе', 'error');
+
 			if($data['message']=='')
 			{
 				$tb=$_POST['tb'];

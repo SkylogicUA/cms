@@ -48,12 +48,13 @@ class ModulesController extends BaseController{
         $vars['list'] = $this->listView();
         $view = new View($this->registry);
 
-        $vars['modules'] = $this->db->rows("SELECT *, m.comment as name
+        $vars['modules'] = $this->db->rows("SELECT *, m.comment as name, m.id as type_id
                                             FROM `moderators_type` m
                                             LEFT JOIN `moderators_permission` mp
                                             ON mp.moderators_type_id=m.id AND mp.module_id=?
+											WHERE m.id!=?
                                             ORDER BY m.id ASC",
-            array($this->params['edit']));
+            array($this->params['edit'], 1));
         $vars['menu'] = $this->db->rows("SELECT * FROM `menu_admin` ORDER BY id ASC");
         $data['content'] = $view->Render('edit.phtml', $vars);
         return $this->Render($data);
@@ -130,6 +131,10 @@ class ModulesController extends BaseController{
                     if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
                     else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
                 }
+				
+				$param = array(800, 1, $insert_id);
+				if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
+				else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
             }
 			
 			if(isset($_POST['create_dir']))
@@ -173,15 +178,30 @@ class ModulesController extends BaseController{
                     $this->db->query("UPDATE `".$this->tb."` SET `name`=?, `comment`=?, `tables`=?, `sub`=? WHERE id=?", $param);
 
                     ///
+					/*
+					'000'-off;
+					'100'-read;
+					'200'-read/edit;
+					'300'-read/del;
+					'400'-read/add;
+					'500'-read/edit/del;
+					'600'-read/edit/add;
+					'700'-read/del/add;
+					'800'-read/edit/del/add;
+					*/
                     if(count($_POST['module_id'])!=0)
                     {
                         for($i=0; $i<=count($_POST['module_id']) - 1; $i++)
                         {
                             $id = $_POST['module_id'][$i];
-                            if(isset($_POST['read'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=700;
-                            elseif(isset($_POST['read'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=600;
-                            elseif(isset($_POST['read'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=500;
-                            elseif(isset($_POST['read'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=400;
+                            if(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=800;
+                            elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=100;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=200;
+                            elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=300;
+							elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=400;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=500;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=600;
+							elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=700;
                             else $chmod="000";
                             //echo $chmod.'<br />';
                             $param = array($id, $_POST['id']);
@@ -191,6 +211,9 @@ class ModulesController extends BaseController{
                             if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
                             else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
                         }
+						$param = array(800, 1, $_POST['id']);
+						if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
+						else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
                     }
 
                     $message .= messageAdmin('Данные успешно сохранены');

@@ -116,10 +116,14 @@ class ModeratorstypeController extends BaseController{
                         for($i=0; $i<=count($_POST['module_id']) - 1; $i++)
                         {
                             $id = $_POST['module_id'][$i];
-                            if(isset($_POST['read'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=700;
-                            elseif(isset($_POST['read'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=600;
-                            elseif(isset($_POST['read'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=500;
-                            elseif(isset($_POST['read'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=400;
+                            if(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=800;
+                            elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=100;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=200;
+                            elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=300;
+							elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=400;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&!isset($_POST['add'.$id]))$chmod=500;
+                            elseif(isset($_POST['read'.$id])&&isset($_POST['edit'.$id])&&!isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=600;
+							elseif(isset($_POST['read'.$id])&&!isset($_POST['edit'.$id])&&isset($_POST['del'.$id])&&isset($_POST['add'.$id]))$chmod=700;
                             else $chmod="000";
                             //echo $chmod.'<br />';
                             $param = array($_POST['id'], $id);
@@ -128,6 +132,13 @@ class ModeratorstypeController extends BaseController{
                             $param = array($chmod, $_POST['id'], $id);
                             if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
                             else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
+							
+							$param = array(1, $id);
+							$row = $this->db->row("SELECT moderators_type_id FROM `moderators_permission` WHERE moderators_type_id=? AND module_id=?", $param);
+							
+							$param = array(800, 1, $id);
+							if($row)$this->db->query("UPDATE `moderators_permission` SET `permission`=? WHERE moderators_type_id=? AND module_id=?", $param);
+							else $this->db->query("INSERT INTO `moderators_permission` SET `permission`=?, moderators_type_id=?, module_id=?", $param);
                         }
                     }
 
@@ -149,14 +160,14 @@ class ModeratorstypeController extends BaseController{
             {
                 for($i=0; $i<=count($_POST['id']) - 1; $i++)
                 {
-                    $this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=?", array($_POST['id'][$i]));
+                    $this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=? AND id!='1'", array($_POST['id'][$i]));
                 }
                 $message = messageAdmin('Запись успешно удалена');
             }
             elseif(isset($this->params['delete'])&& $this->params['delete']!='')
             {
                 $id = $this->params['delete'];
-                if($this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=?", array($id)))$message = messageAdmin('Запись успешно удалена');
+                if($this->db->query("DELETE FROM `".$this->tb."` WHERE `id`=? AND id!='1'", array($id)))$message = messageAdmin('Запись успешно удалена');
             }
         }
         return $message;
@@ -167,6 +178,8 @@ class ModeratorstypeController extends BaseController{
         $vars['list'] = $this->db->rows("SELECT
 											tb.*
 										 FROM ".$this->tb." tb
+										 
+										 WHERE id!='1'
 											ORDER BY tb.`id` DESC");
         return $vars;
     }

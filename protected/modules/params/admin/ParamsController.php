@@ -11,7 +11,7 @@ class ParamsController extends BaseController{
 	{
 		parent::__construct($registry, $params);
 		$this->tb = "params";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
         $this->name = "Фильтры товаров";
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));

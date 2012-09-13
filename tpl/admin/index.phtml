@@ -37,7 +37,7 @@ $lang='';
 $cur_lang='Russian';
 foreach($vars['languages'] as $row)
 {
-	if($_SESSION['key_lang']==$row['language'])$cur_lang=$row['comment'];
+	if($_SESSION['key_lang_admin']==$row['language'])$cur_lang=$row['comment'];
 	$lang.='<li><a style="background-image: url(/tpl/admin/images/flags/'.$row['language'].'.png);" href="/'.$row['language'].''.$this->getUrl2($row['language']).'">'.$row['comment'].'</a></li>';
 }
 ?>

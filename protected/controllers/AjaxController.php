@@ -39,7 +39,8 @@ class AjaxController extends BaseController{
 			$count=$this->db->rows("SELECT `id` FROM `bascket` WHERE `session_id`=? and `product_id`=?", array(session_id(), $_POST['id']));
 			if(count($count)==0)
 			{
-				$date=date("Y-m-d H:i:s");echo $_POST['id'];
+				if($_POST['amount']==0)$_POST['amount']=1;
+				$date=date("Y-m-d H:i:s");
 				$row=$this->db->row("SELECT `price` FROM `product` WHERE `id`=?", array($_POST['id']));
 				$this->db->query("INSERT into bascket SET price=?, session_id=?, product_id=?, date=?, amount=?", array($row['price'], session_id(), $_POST['id'], $date, $_POST['amount']));
 			}

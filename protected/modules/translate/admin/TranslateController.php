@@ -12,7 +12,7 @@ class TranslateController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "translate";
         $this->name = "Переводы";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 	}
 

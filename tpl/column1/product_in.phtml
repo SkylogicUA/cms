@@ -48,7 +48,7 @@
 		
 		if(isset($vars['other']))
 		{
-			echo'<div id="other">Смотрите также</div>';
+			echo'<div id="other">'.$vars['translate']['other_product'].'</div>';
 			$i=0;
 			foreach($vars['other'] as $row)
 			{

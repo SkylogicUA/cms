@@ -1822,7 +1822,7 @@ elFinder.prototype.ui.prototype.commands = {
 						width       : 350,
 						close       : function() { self.fm.lockShortcuts(); },
 						buttons     : {
-							Cancel : function() { $(this).dialog('close'); },
+							
 							Ok     : function() { 
 								$(this).dialog('close'); 
 								var o = { cmd : 'rm', current : self.fm.cwd.hash };
@@ -1832,7 +1832,8 @@ elFinder.prototype.ui.prototype.commands = {
 									o['targets[]'] = ids;
 								}
 								self.fm.ajax(o, function(data) { data.tree && self.fm.reload(data); }, {force : true});
-							}
+							},
+							Cancel : function() { $(this).dialog('close'); }
 						}
 					});
 			}
@@ -2039,7 +2040,6 @@ elFinder.prototype.ui.prototype.commands = {
 						resizable   : false,
 						close       : function() { self.fm.lockShortcuts(); },
 						buttons     : {
-							Cancel : function() { $(this).dialog('close'); },
 							Ok     : function() {
 								if (!$(':file[value]', f).length) {
 									return error(self.fm.i18n('Select at least one file to upload'));
@@ -2058,7 +2058,8 @@ elFinder.prototype.ui.prototype.commands = {
 									}
 								});
 								$(this).dialog('close');
-							}
+							},
+							Cancel : function() { $(this).dialog('close'); }
 						}
 					});
 
@@ -2206,7 +2207,6 @@ elFinder.prototype.ui.prototype.commands = {
 						width   : 500,
 						close   : function() { self.fm.lockShortcuts(); },
 						buttons : {
-							Cancel : function() { $(this).dialog('close'); },
 							Ok     : function() {
 								var c = ta.val();
 								$(this).dialog('close');
@@ -2223,7 +2223,8 @@ elFinder.prototype.ui.prototype.commands = {
 										
 									}
 								}, {type : 'POST'});
-							}
+							},
+							Cancel : function() { $(this).dialog('close'); }
 						}
 					});
 			});
@@ -2352,7 +2353,6 @@ elFinder.prototype.ui.prototype.commands = {
 					modal : true,
 					close : function() { self.fm.lockShortcuts(); },
 					buttons : {
-						Cancel : function() { $(this).dialog('close'); },
 						Ok     : function() {
 							var _w = parseInt(iw.val()) || 0,
 								_h = parseInt(ih.val()) || 0;
@@ -2369,7 +2369,8 @@ elFinder.prototype.ui.prototype.commands = {
 								});
 							}
 							$(this).dialog('close');
-						}
+						},
+						Cancel : function() { $(this).dialog('close'); }
 					}
 				});
 			} 

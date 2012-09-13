@@ -94,18 +94,37 @@ class Router{
 								$uri_params['controller'] = ucfirst($url[1]);
 								if(isset($url[2])&&$url[2]=="edit")$uri_params['action']="edit";
 								elseif(isset($url[2])&&$url[2]=="add")$uri_params['action']="add";
+
 								Registry::set('topic_value', $url[1]);
 								//$params['module'] = $url[1];
-								if(isset($url[2])&&($url[2]=='delete'||$url[2]=='edit'||$url[2]=='update'||$url[2]=='duplicate')&&($row['permission']!=500&&$row['permission']!=700))
+								/*
+								'000'-off;
+								'100'-read;
+								'200'-read/edit;
+								'300'-read/del;
+								'400'-read/add;
+								'500'-read/edit/del;
+								'600'-read/edit/add;
+								'700'-read/del/add;
+								'800'-read/edit/del/add;
+								*/
+								
+								if(isset($url[2])&&($url[2]=='delete'||(isset($_POST['delete'])&&$url[2]=='update'))&&($row['permission']!=500&&$row['permission']!=300&&$row['permission']!=700&&$row['permission']!=800))
 								{
 									$this->registry->set('access', messageAdmin('Отказано в доступе', 'error'));
 									$uri_params['action']='index';
 								}
-								elseif(isset($url[2])&&$url[2]=='add'&&($row['permission']!=600&&$row['permission']!=700))
+								elseif(isset($url[2])&&($url[2]=='edit'||$url[2]=='update')&&($row['permission']!=200&&$row['permission']!=500&&$row['permission']!=600&&$row['permission']!=800))
 								{
 									$this->registry->set('access', messageAdmin('Отказано в доступе', 'error'));
 									$uri_params['action']='index';
 								}
+								elseif(isset($url[2])&&($url[2]=='add'||$url[2]=='duplicate')&&($row['permission']!=400&&$row['permission']!=600&&$row['permission']!=700&&$row['permission']!=800))
+								{
+									$this->registry->set('access', messageAdmin('Отказано в доступе', 'error'));
+									$uri_params['action']='index';
+								}
+
 								$this->registry->set('admin', $url[1]);
 								$params['action'] = $uri_params['action'];
 								$params['controller'] =ucfirst($url[1]);
@@ -168,7 +187,7 @@ class Router{
 		{
 			if($url[0]=='catalog'||$url[0]=='news'||$url[0]=='photos'||$url[0]=='orders')
 			{
-				header("Location: /{$url[0]}/all");
+				header("Location: ".LINK."/{$url[0]}/all");
 				exit();
 			}
 		}
@@ -176,9 +195,12 @@ class Router{
 		$url_count = count($url);
 		for($i=2;$i<$url_count;)
 		{
-			if(isset($url[$i+1]))$val=$url[$i+1];
-			else $val='';
-			$params[$url[$i]]=$val;
+			if(($url[$i]!='delete'&&$url[$i]!='duplicate')||(($url[$i]=='delete'||$url[$i]=='duplicate')&&$i==2))
+			{
+				if(isset($url[$i+1]))$val=$url[$i+1];
+				else $val='';
+				$params[$url[$i]]=$val;
+			}
 			$i+=2;
 		}
 		

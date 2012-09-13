@@ -13,8 +13,9 @@ class BaseController{
 		
 		/////////////Language
 		$this->key_lang = $this->registry['key_lang'];//Current language
+		$this->key_lang_admin = $this->registry['key_lang_admin'];//Current admin language
 		$this->language = $this->db->rows("SELECT * FROM language ORDER BY `id` ASC");//Languages
-
+		//echo"{$this->key_lang}-{$this->key_lang_admin}";
         ////////////Translations
 		$this->translation=$this->db->rows_key("SELECT
                                                     tb.key,
@@ -23,7 +24,7 @@ class BaseController{
                                                     LEFT JOIN
                                                         ".$this->key_lang."_translate tb2
                                                     ON tb.id=tb2.translate_id");
-
+		
         ////////////Config
         $const = $this->db->rows_key("SELECT name, value FROM const");
         Registry::set('user_settings', $const);
@@ -91,7 +92,7 @@ class BaseController{
                 array($_SESSION['admin']['type'], '000'));
 				$data['language'] =  $this->language;  
 				$data['languages'] = $this->db->rows("SELECT * FROM `language` ORDER  BY id ASC"); 
-				$data['key'] = $this->key_lang;
+				$data['key'] = $this->key_lang_admin;
 				$data['menu_inc'] = $view->Render('menu.inc.phtml',	$data);  
 			}
             else $data['login']=1;
@@ -426,6 +427,17 @@ class BaseController{
 	
 	public function checkAccess($action, $module)//////Проверка доступа модулей в админке
 	{
+		/*
+		'000'-off;
+		'100'-read;
+		'200'-read/edit;
+		'300'-read/del;
+		'400'-read/add;
+		'500'-read/edit/del;
+		'600'-read/edit/add;
+		'700'-read/del/add;
+		'800'-read/edit/del/add;
+		*/
 		$row = $this->db->row("SELECT m.`permission` 
 							   FROM `moderators_permission` m
 							   
@@ -436,10 +448,21 @@ class BaseController{
 							   ON mmm.id=m.module_id
 							   
 							   WHERE mmm.controller=? AND mm.id=?", array($module, $_SESSION['admin']['id']));
-		if(($action=='delete'||$action=='edit')&&($row['permission']!=500&&$row['permission']!=700))return messageAdmin('Отказано в доступе', 'error');
-		elseif($action=='add'&&($row['permission']!=600&&$row['permission']!=700))return messageAdmin('Отказано в доступе', 'error');
-		elseif($action=='read'&&$row['permission']==000){return Loader::act('error');}
-		return false;
+							   
+		if($row['permission']==000)return Loader::act('error');			   
+		elseif($action=='delete'&&($row['permission']!=500&&$row['permission']!=300&&$row['permission']!=700&&$row['permission']!=800))
+		{
+			return false;
+		}
+		elseif(($action=='edit'||$action=='update')&&($row['permission']!=200&&$row['permission']!=500&&$row['permission']!=600&&$row['permission']!=800))
+		{
+			return false;
+		}
+		elseif(($action=='add'||$action=='duplicate')&&($row['permission']!=400&&$row['permission']!=600&&$row['permission']!=700&&$row['permission']!=800))
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	public function checkUrl($tb, $url, $id)///Проверка уникальности URL

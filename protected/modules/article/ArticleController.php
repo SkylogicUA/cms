@@ -18,7 +18,7 @@ class ArticleController extends BaseController{
 	{
 		$view = new View($this->registry);
 		$vars['translate'] = $this->translation;
-		if(!isset($this->params[$this->tb]))header("Location: /".$this->tb."/all");
+		if(!isset($this->params[$this->tb]))header("Location: ".LINK."/".$this->tb."/all");
 		
 		if(!isset($this->params[$this->tb])||$this->params[$this->tb]=='all')
 		{

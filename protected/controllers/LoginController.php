@@ -31,7 +31,7 @@ class LoginController extends BaseController{
 				$admin_info['id'] = $res['id'];
                 $admin_info['type'] = $res['type_moderator'];
 				$_SESSION['admin'] = $admin_info;
-				header('location:/admin/menu');
+				header('location:'.$_SERVER['REQUEST_URI']);
 			}
 			else $vars['err'] = $err;
 		}

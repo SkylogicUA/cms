@@ -6,7 +6,7 @@
 		<th width="25%">Ключ</th>
 		<th width="25%">Значение</th>
         <th>Комментарий</th>
-		<th width="10%">&nbsp;</th>
+		<th width="5%">&nbsp;</th>
 	</tr>
 	<?php
 		foreach($vars['list'] as $row)
@@ -16,7 +16,7 @@
                     <td><span>'.$row['id'].'</span><input type="hidden" value="'.$row['id'].'" name="save_id[]" /></td>
                     <td><input type="text" value="'.$row['key'].'" name="key[]" class="input-text"></td>
                     <td><input type="text" value="'.$row['value'].'" name="value[]" class="input-text"></td>
-                    <td><input type="text" value="'.$row['comment'].'" name="comment[]" class="input-text" style="width:400px;" /></td>
+                    <td><input type="text" value="'.$row['comment'].'" name="comment[]" class="input-text" style="width:350px;" /></td>
                     <td width="10%">
                         <ul class="cm-tools-list tools-list">
                             <li><a href="/admin/'.$vars['action'].'/delete/'.$row['id'].'" class="cm-confirm">Удалить</a></li>

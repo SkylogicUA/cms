@@ -15,17 +15,19 @@
 					<?php echo $vars['list'];?>
 				</div>
 				<div class="buttons-container buttons-bg">
-					<div class="cm-buttons-placeholder">
-						<div class="float-left">
-							<span class="submit-button cm-button-main">
-								<input type="submit" value="Сохранить" name="update" class="">
-							</span>или
-							<span class="submit-button cm-button-main cm-confirm cm-process-items">
-								<input type="submit" value="Удалить выбранные" name="delete" class="cm-process-items">
-							</span>
-						</div>
-					</div>
-					<div class="cm-buttons-floating hidden"></div>
+                	<div class="cm-buttons-floating hidden" style="display: block;">
+                        <div class="cm-buttons-placeholder">
+                            <div class="float-left">
+                                <span class="submit-button cm-button-main">
+                                    <input type="submit" value="Сохранить" name="update" class="">
+                                </span>или
+                                <span class="submit-button cm-button-main cm-confirm cm-process-items">
+                                    <input type="submit" value="Удалить выбранные" name="delete" class="cm-process-items">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="cm-buttons-floating hidden"></div>
+                     </div>   
 				</div>
 				<input type="hidden" value="<?=$vars['action']?>" id="action" />
 			</form>

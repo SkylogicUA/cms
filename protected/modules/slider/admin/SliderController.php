@@ -12,7 +12,7 @@ class SliderController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "slider";
         $this->name = "Слайдер";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 
         $this->width = 666;

@@ -83,7 +83,7 @@ class StatusController extends BaseController{
 						
 						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
                         $this->db->query("UPDATE `".$this->tb."` SET `comment`=? WHERE id=?", array($_POST['comment'][$i], $_POST['save_id'][$i]));
-						$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", array($_POST['name'][$i], $_POST['save_id'][$i]));
+						$this->db->query("UPDATE `".$this->key_lang_admin."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", array($_POST['name'][$i], $_POST['save_id'][$i]));
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
 				}
@@ -121,7 +121,7 @@ class StatusController extends BaseController{
 		$vars['list'] = $this->db->rows("SELECT *
 										 FROM ".$this->tb." tb
 										 
-										 LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										 LEFT JOIN ".$this->key_lang_admin."_".$this->tb." tb2
 										 ON tb.id=tb2.".$this->tb."_id 
 										 
 										 ORDER BY tb.`id` DESC");

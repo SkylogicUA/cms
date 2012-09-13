@@ -31,7 +31,7 @@ class IndexController extends BaseController {
 												
 											  WHERE tb.sub='9'
 											  ORDER BY sort ASC");
-		$vars['body'] = $this->getPage('/');
+		$vars['body'] = $this->getPage('home');
 		$vars['slider'] = $view->Render('slider.phtml', $vars);
 
 		$vars['top_ban'] = $this->getBlock(6);

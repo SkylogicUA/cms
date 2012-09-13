@@ -23,7 +23,12 @@ $(document).ready(function(){
         else $(".add_chmod").attr('checked', false);
     });
 
-    $('#del_all').live('click', function(){
+    $('#edit_all').live('click', function(){
+        if($(this).attr('checked')=='checked')$(".edit_chmod").attr('checked', 'checked');
+        else $(".edit_chmod").attr('checked', false);
+    });
+	
+	 $('#del_all').live('click', function(){
         if($(this).attr('checked')=='checked')$(".del_chmod").attr('checked', 'checked');
         else $(".del_chmod").attr('checked', false);
     });
@@ -36,13 +41,18 @@ $(document).ready(function(){
         var id=$(this).val();
         if($(this).attr('checked')=='checked')$("#read"+id).attr('checked', 'checked');
     });
+	$('.edit_chmod').live('click', function(){
+        var id=$(this).val();
+        if($(this).attr('checked')=='checked')$("#read"+id).attr('checked', 'checked');
+    });
 
     $('.read_chmod').live('click', function(){
         var id=$(this).val();
         if($(this).attr('checked')!='checked')
         {
             $("#add"+id).attr('checked', false);
-            $("#del"+id).attr('checked', false);
+            $("#edit"+id).attr('checked', false);
+			$("#del"+id).attr('checked', false);
         }
     });
 

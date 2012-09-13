@@ -12,10 +12,10 @@ class MenuController extends BaseController
 	{
 		parent::__construct($registry, $params);
 		$this->registry = $registry; 
-		$this->key_lang = $this->registry['key_lang'];//Current language
+		$this->key_lang_admin = $this->registry['key_lang_admin'];//Current language
 		
 		$this->tb = "menu";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 
 	}
 
@@ -83,8 +83,8 @@ class MenuController extends BaseController
 		$message='';
 		if(isset($_POST['sub'], $_POST['active'], $_POST['url'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'])&&$_POST['name']!="")
 		{
-			if($_POST['url']=='')$url = translit($_POST['name']);
-			else $url = translit($_POST['url']);
+			if($_POST['url']=='')$url = translit($_POST['name'], true);
+			else $url = translit($_POST['url'], true);
 			
 			if($_POST['sub']==0)$sub = NULL;
 			else $sub = $_POST['sub'];
@@ -115,8 +115,8 @@ class MenuController extends BaseController
 				{
 					for($i=0; $i<=count($_POST['save_id']) - 1; $i++)
 					{
-						if($_POST['url'][$i]=='')$url = translit($_POST['name'][$i]);
-						else $url = $_POST['url'][$i];
+						if($_POST['url'][$i]=='')$url = translit($_POST['name'][$i], true);
+						else $url = translit($_POST['url'][$i], true);
 						//echo $_POST['name'][$i].'<br>';
 						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
 						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);
@@ -129,14 +129,14 @@ class MenuController extends BaseController
 			else{
 				if(isset($_POST['sub'], $_POST['active'], $_POST['url'], $_POST['id'], $_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body']))
 				{
-					if($_POST['url']=='')$url = translit($_POST['name']);
+					if($_POST['url']=='')$url = translit($_POST['name'], true);
 					else $url = $_POST['url'];
 					
 					$message = $this->checkUrl($this->tb, $url, $_POST['id']);
 					if($_POST['sub']==0)$sub = NULL;
 					else $sub = $_POST['sub'];
-					$param = array($sub, $_POST['active'], $_POST['id']);
-					$this->db->query("UPDATE `".$this->tb."` SET `sub`=?, `active`=? WHERE id=?", $param);
+					$param = array($sub, $_POST['active'], $_POST['form'], $_POST['id']);
+					$this->db->query("UPDATE `".$this->tb."` SET `sub`=?, `active`=?, `form`=? WHERE id=?", $param);
 					
 					$param = array($_POST['name'], $_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb_lang."` SET `name`=?, `title`=?, `keywords`=?, `description`=?, `body`=? WHERE `".$this->tb."_id`=?", $param);

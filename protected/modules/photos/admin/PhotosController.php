@@ -12,7 +12,7 @@ class PhotosController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "photos";
 		$this->name = "Фотогалерея";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 	}
 
@@ -81,7 +81,7 @@ class PhotosController extends BaseController{
 										array($this->params['edit']));
 
         $vars['photo'] = $this->db->rows("SELECT * FROM `photo` tb
-                                          LEFT JOIN `".$this->key_lang."_photo` tb2
+                                          LEFT JOIN `".$this->key_lang_admin."_photo` tb2
                                           ON tb.id=tb2.photo_id
                                           WHERE photos_id=?
                                           ORDER BY sort ASC",
@@ -162,7 +162,7 @@ class PhotosController extends BaseController{
                         for($i=0; $i<=count($_POST['save_photo_id']) - 1; $i++)
                         {
                             $param = array($_POST['photo_name'][$i], $_POST['save_photo_id'][$i]);
-                            $this->db->query("UPDATE `".$this->key_lang."_photo` SET `name`=? WHERE photo_id=?", $param);
+                            $this->db->query("UPDATE `".$this->key_lang_admin."_photo` SET `name`=? WHERE photo_id=?", $param);
                         }
                     }
 

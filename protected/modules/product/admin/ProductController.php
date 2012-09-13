@@ -12,9 +12,9 @@ class ProductController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "product";
 		$this->name = "Товары";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
-        $this->tb_cat=$this->key_lang.'_catalog';
-		$this->tb_photo=$this->key_lang.'_product_photo';
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
+        $this->tb_cat=$this->key_lang_admin.'_catalog';
+		$this->tb_photo=$this->key_lang_admin.'_product_photo';
         $this->width=202;
         $this->height=130;
 		$this->registry = $registry;
@@ -90,7 +90,7 @@ class ProductController extends BaseController{
 		{
 			$vars['brend'] = $this->db->rows("SELECT tb.id, tb2.name
 												  FROM `brend` tb
-												  LEFT JOIN `".$this->key_lang."_brend` tb2
+												  LEFT JOIN `".$this->key_lang_admin."_brend` tb2
 												  ON tb2.brend_id=tb.id
 												  ORDER BY tb.sort ASC");						  
 		}	
@@ -146,7 +146,7 @@ class ProductController extends BaseController{
 		{
 			$vars['params'] = $this->db->rows("SELECT tb.id, tb.sub, tb2.name
 												  FROM `params` tb
-												  LEFT JOIN `".$this->key_lang."_params` tb2
+												  LEFT JOIN `".$this->key_lang_admin."_params` tb2
 												  ON tb2.params_id=tb.id
 												  ORDER BY tb.sort ASC");
 			$vars['params_set'] = $this->db->rows("SELECT * FROM `params_product` WHERE product_id=?", array($vars['edit']['id']));	
@@ -159,14 +159,14 @@ class ProductController extends BaseController{
 		{
 			$vars['brend'] = $this->db->rows("SELECT tb.id, tb2.name
 												  FROM `brend` tb
-												  LEFT JOIN `".$this->key_lang."_brend` tb2
+												  LEFT JOIN `".$this->key_lang_admin."_brend` tb2
 												  ON tb2.brend_id=tb.id
 												  ORDER BY tb.sort ASC");						  
 		}	
 
 		////Extra photo
         $vars['photo'] = $this->db->rows("SELECT * FROM `product_photo` tb
-                                          LEFT JOIN `".$this->key_lang."_product_photo` tb2
+                                          LEFT JOIN `".$this->key_lang_admin."_product_photo` tb2
                                           ON tb.id=tb2.photo_id
                                           WHERE product_id=?
                                           ORDER BY tb.sort ASC",

@@ -100,68 +100,78 @@ class OrdersController extends BaseController{
 		
 		if(isset($_POST['name'])&&count($vars['product'])!=0)
 		{
-			if(isset($vars['user_info']))
+			$error="";
+			$error.=$this->validate($_POST['email'], 'email');
+			$error.=$this->validate($_POST['name']);
+			if($error=="")
 			{
-				$where2='';
-				if($vars['user_info']['address']=='')$where2.=",address='{$_POST['address']}'";
-				if($vars['user_info']['city']=='')$where2.=",city='{$_POST['city']}'";
-				if($vars['user_info']['post_index']=='')$where2.=",post_index='{$_POST['post_index']}'";
-				if($vars['user_info']['phone']=='')$where2.=",phone='{$_POST['phone']}'";
-				if($where2!='')
+				if(isset($vars['user_info']))
 				{
-					$where2=substr($where2, 1, 1000);
-					$this->db->query("UPDATE users SET $where2 WHERE id=?", array($_SESSION['user_id']));	
+					$where2='';
+					if($vars['user_info']['address']=='')$where2.=",address='{$_POST['address']}'";
+					if($vars['user_info']['city']=='')$where2.=",city='{$_POST['city']}'";
+					if($vars['user_info']['post_index']=='')$where2.=",post_index='{$_POST['post_index']}'";
+					if($vars['user_info']['phone']=='')$where2.=",phone='{$_POST['phone']}'";
+					if($where2!='')
+					{
+						$where2=substr($where2, 1, 1000);
+						$this->db->query("UPDATE users SET $where2 WHERE id=?", array($_SESSION['user_id']));	
+					}
 				}
-			}
-			else{/////New users
-				$row=$this->db->row("SELECT id FROM users WHERE email=?", array($_POST['email']));
-				if(!$row)
-				{
-					$pass = genPassword();
-					$start_date=date("Y-m-d H:i:s");
-					$code=md5(mktime());
-					$settings = Registry::get('user_settings');
-					$this->db->query("INSERT INTO users SET 
-															name=?, 
-															email=?, 
-															pass=?, 
-															status_id=?, 
-															phone=?, 
-															address=?, 
-															post_index=?, 
-															city=?, 
-															start_date=?,
-															active_email=?", 
-					array($_POST['name'], $_POST['email'], md5($pass), 1, $_POST['phone'], $_POST['address'], $_POST['post_index'], $_POST['city'], $start_date, $code));
-					/*$text="Вы зарегистрировались на сайте {$_SERVER['HTTP_HOST']}.<br /><br />
+				else{/////New users
+					$row=$this->db->row("SELECT id FROM users WHERE email=?", array($_POST['email']));
+					if(!$row)
+					{
+						$pass = genPassword();
+						$start_date=date("Y-m-d H:i:s");
+						$code=md5(mktime());
+						$settings = Registry::get('user_settings');
+						$this->db->query("INSERT INTO users SET 
+																name=?, 
+																email=?, 
+																pass=?, 
+																status_id=?, 
+																phone=?, 
+																address=?, 
+																post_index=?, 
+																city=?, 
+																start_date=?,
+																active_email=?", 
+						array($_POST['name'], $_POST['email'], md5($pass), 1, $_POST['phone'], $_POST['address'], $_POST['post_index'], $_POST['city'], $start_date, $code));
+						/*$text="Вы зарегистрировались на сайте {$_SERVER['HTTP_HOST']}.<br /><br />
+		
+								Для завершения регистрации перейдите по адресу<br />
+								<a href=\"http://{$_SERVER['HTTP_HOST']}/users/active/code/$code\" target=\"_blank\">http://{$_SERVER['HTTP_HOST']}/users/active/code/$code</a><br /><br />
 	
-							Для завершения регистрации перейдите по адресу<br />
-							<a href=\"http://{$_SERVER['HTTP_HOST']}/users/active/code/$code\" target=\"_blank\">http://{$_SERVER['HTTP_HOST']}/users/active/code/$code</a><br /><br />
-
-								Ваш логин: {$_POST['email']}<br />
-								Ваш пароль: $pass<br /><br />
-								
-								P.S. Если вы получили это письмо, но не проходили процесс регистрации (возможно кто-то использовал ваш e-mail), просто проигнорируйте это письмо.";
-					send_mime_mail($settings['sitename'], // имя отправителя
-						"info@".$_SERVER['HTTP_HOST'], // email отправителя
-						$_POST['name'], // имя получателя
-						$_POST['email'], // email получателя
-						"utf-8", // кодировка переданных данных
-						"windows-1251", // кодировка письма
-						"Вы зарегистрировались на сайте ".$_SERVER['HTTP_HOST'], // тема письма
-						$text // текст письма
-						);//echo $text;
-					*/
-					$vars['user_info'] = $this->db->row("SELECT id FROM users WHERE email=?", array($_POST['email']));
-					$user_id = $vars['user_info']['id'];
+									Ваш логин: {$_POST['email']}<br />
+									Ваш пароль: $pass<br /><br />
+									
+									P.S. Если вы получили это письмо, но не проходили процесс регистрации (возможно кто-то использовал ваш e-mail), просто проигнорируйте это письмо.";
+						send_mime_mail($settings['sitename'], // имя отправителя
+							"info@".$_SERVER['HTTP_HOST'], // email отправителя
+							$_POST['name'], // имя получателя
+							$_POST['email'], // email получателя
+							"utf-8", // кодировка переданных данных
+							"windows-1251", // кодировка письма
+							"Вы зарегистрировались на сайте ".$_SERVER['HTTP_HOST'], // тема письма
+							$text // текст письма
+							);//echo $text;
+						*/
+						$vars['user_info'] = $this->db->row("SELECT id FROM users WHERE email=?", array($_POST['email']));
+						$user_id = $vars['user_info']['id'];
+					}
 				}
+				$this->sendOrder($query, $user_id, $vars['currency']);
+				$vars['send']=true;
+				$vars['message']='<div class="done">'.htmlspecialchars_decode($vars['translate']['message_sent_order']).'</div>';
 			}
-			$this->sendOrder($query, $user_id, $vars['currency']);
-			$vars['message']="<div class='done'><b>Благодарим Вас за заказ!</b><br />В ближайшее время с Вами свяжется менеджер по указанному Вами E-mail!</div>";
+			else $vars['message'] = $error;
 		}
 		
 		$data['styles'] = array('validationEngine.jquery.css', 'user.css');
-        $data['scripts'] = array('jquery.validationEngine.js', 'jquery.validationEngine-ru.js');
+        if($this->key_lang=='ru')$scr='jquery.validationEngine-ru.js';
+		else $scr='jquery.validationEngine-en.js';
+        $data['scripts'] = array('jquery.validationEngine.js', $scr);
 		$data['content'] = $view->Render('cart.phtml', $vars);
 		return $this->Render($data);
     }
@@ -284,7 +294,7 @@ class OrdersController extends BaseController{
 						$text // текст письма
 						);//echo $text;					
 
-		//$this->db->query("DELETE FROM `bascket` WHERE `session_id`=?", array(session_id()));
+		$this->db->query("DELETE FROM `bascket` WHERE `session_id`=?", array(session_id()));
 	}
 }
 ?>

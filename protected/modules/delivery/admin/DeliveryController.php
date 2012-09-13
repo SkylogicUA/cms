@@ -11,7 +11,7 @@ class DeliveryController extends BaseController{
 	{
 		parent::__construct($registry, $params);
 		$this->tb = "delivery";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
         $this->name = "Способ доставки";
 		$this->registry = $registry;
 	}

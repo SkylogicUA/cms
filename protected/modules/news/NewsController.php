@@ -18,7 +18,7 @@ class NewsController extends BaseController{
 	{
 		$view = new View($this->registry);
 		$vars['translate'] = $this->translation;
-		if(!isset($this->params[$this->tb]))header("Location: /".$this->tb."/all");
+		if(!isset($this->params[$this->tb]))header("Location: ".LINK."/".$this->tb."/all");
 		
 		if(!isset($this->params[$this->tb])||$this->params[$this->tb]=='all')
 		{
@@ -34,7 +34,7 @@ class NewsController extends BaseController{
 			}
 			$q="SELECT tb1.*, tb2.name, tb2.body_m
 				 FROM `".$this->tb."` tb1
-				 LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+				 LEFT JOIN ".$this->key_lang_admin."_".$this->tb." tb2
 				 ON tb1.id=tb2.".$this->tb."_id
 				 WHERE  tb1.active=?
 				 ORDER BY tb1.`sort` ASC";
@@ -51,7 +51,7 @@ class NewsController extends BaseController{
 		else{
 		   $vars['news'] = $this->db->row("SELECT *
 										   FROM `".$this->tb."` tb1
-										   LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										   LEFT JOIN ".$this->key_lang_admin."_".$this->tb." tb2
 										   ON tb1.id=tb2.".$this->tb."_id
 										   WHERE tb1.url=? AND tb1.active=?",
 		   array($this->params[$this->tb], 1));
@@ -66,7 +66,7 @@ class NewsController extends BaseController{
 		
 		   $vars['other'] = $this->db->rows("SELECT tb1.*, tb2.name, tb2.body_m
 										   FROM `".$this->tb."` tb1
-										   LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										   LEFT JOIN ".$this->key_lang_admin."_".$this->tb." tb2
 										   ON tb1.id=tb2.".$this->tb."_id
 										   WHERE tb1.url!=? AND tb1.active=?
 										   LIMIT 10",

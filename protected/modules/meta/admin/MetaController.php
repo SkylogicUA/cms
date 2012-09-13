@@ -52,7 +52,7 @@ class MetaController extends BaseController{
 		$vars['edit'] = $this->db->row("SELECT *
 										FROM ".$this->tb." tb
 										
-										LEFT JOIN ".$this->key_lang."_".$this->tb." tb2
+										LEFT JOIN ".$this->key_lang_admin."_".$this->tb." tb2
 										ON tb.id=tb2.meta_id
 										WHERE
 											tb.id=?",
@@ -130,7 +130,7 @@ class MetaController extends BaseController{
 						//echo $_POST['name'][$i].'<br>';
 						$message = $this->checkUrl($this->tb, $url, $_POST['save_id'][$i]);
 						$param = array($_POST['name'][$i], $_POST['save_id'][$i]);
-						$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", $param);
+						$this->db->query("UPDATE `".$this->key_lang_admin."_".$this->tb."` SET `name`=? WHERE ".$this->tb."_id=?", $param);
 					}
 					$message .= messageAdmin('Данные успешно сохранены');
 				}
@@ -141,7 +141,7 @@ class MetaController extends BaseController{
 				{
 					$param = array($_POST['title'], $_POST['keywords'], $_POST['description'], $_POST['body'], $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb."` SET `url`=?, `active`=? WHERE id=?", array($_POST['url'], $_POST['active'], $_POST['id']));
-					$this->db->query("UPDATE `".$this->key_lang."_".$this->tb."` SET `title`=?, `keywords`=?, `description`=?, `body`=? WHERE meta_id=?", $param);
+					$this->db->query("UPDATE `".$this->key_lang_admin."_".$this->tb."` SET `title`=?, `keywords`=?, `description`=?, `body`=? WHERE meta_id=?", $param);
 
 					$message .= messageAdmin('Данные успешно сохранены');
 				}

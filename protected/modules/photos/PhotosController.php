@@ -17,7 +17,7 @@ class PhotosController extends BaseController{
     public function indexAction()
     {
         $vars['translate'] = $this->translation;
-        if(!isset($this->params[$this->tb]))header("Location: /".$this->tb."/all");
+        if(!isset($this->params[$this->tb]))header("Location: ".LINK."/".$this->tb."/all");
 
         if(!isset($this->params[$this->tb])||$this->params[$this->tb]=='all')
         {
@@ -45,6 +45,7 @@ class PhotosController extends BaseController{
                 $vars['paging'] = Paging::MakePaging($cur_page, $count, $size_page);//вызов шаблона для постраничной навигации
             }
             $vars['list'] = $this->db->rows($sql, array(1));
+			$data['breadcrumbs'] = array($this->translation['photos']);
         }
         else{
             $vars['photos'] = $this->db->row("SELECT *
@@ -60,6 +61,8 @@ class PhotosController extends BaseController{
                                                ON tb1.id=tb2.photo_id
                                                WHERE tb1.photos_id=? AND tb1.active=?",
                 array($vars['photos']['id'], 1));
+			$data['breadcrumbs'] = array('<a href="'.LINK.'/photos/all">'.$this->translation['photos'].'</a>', $vars['photos']['name']);
+			$data['meta'] = $vars['photos'];	
         }
         $view = new View($this->registry);
         $data['content'] = $view->Render($this->tb.'.phtml', $vars);

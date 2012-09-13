@@ -14,7 +14,7 @@ class ArticleController extends BaseController{
 		$this->name = "Статьи";
 		$this->width=202;
 		$this->height=130;
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 	}
 

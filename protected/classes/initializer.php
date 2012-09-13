@@ -36,6 +36,7 @@
 	$db = new PDOchild($registry);//echo var_dump($registry['db_settings']);
 	$language = $db->rows("SELECT * FROM `language`");
 	$registry->set('key_lang', getUri($language));
+	$registry->set('key_lang_admin', getUriAdm($language));
 	//echo '<br />end '.$_SESSION['key_lang'];
 
 	if($_SESSION['key_lang']=="ru")define('LINK', '');

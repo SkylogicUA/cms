@@ -11,7 +11,7 @@ class PaymentController extends BaseController{
 	{
 		parent::__construct($registry, $params);
 		$this->tb = "payment";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
         $this->name = "Способ оплаты";
 		$this->registry = $registry;
 	}

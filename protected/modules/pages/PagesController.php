@@ -30,7 +30,7 @@ class PagesController extends BaseController{
 				$error.=$this->validate($_POST['email'], 'email');
 				$error.=$this->validate(array($_POST['name'], $_POST['text'], $_POST['captcha']));
 				if($error=="")
-            	{
+				{
 					$text = "
 					ФИО: {$_POST['name']}	<br />
 					E-mail: {$_POST['email']}	<br />
@@ -53,7 +53,14 @@ class PagesController extends BaseController{
 				}
 				else $vars['message'] = $error;
 			}
-           if($vars['body']['form']==1)$vars['form'] = $view->Render('feedback.phtml',	$vars);
+           if($vars['body']['form']==1)
+		   {
+			   $data['styles'] = array('validationEngine.jquery.css', 'user.css');
+			   if($this->key_lang=='ru')$scr='jquery.validationEngine-ru.js';
+			   else $scr='jquery.validationEngine-en.js';
+        	   $data['scripts'] = array('jquery.validationEngine.js', $scr);
+			   $vars['form'] = $view->Render('feedback.phtml',	$vars);
+		   }
 		   elseif($vars['body']['form']==2)
 		   {
 			   $vars['type_comment'] = $vars['body']['type'];

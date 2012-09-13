@@ -12,7 +12,7 @@ class VideoController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "video";
 		$this->name = "Видео";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 	}
 

@@ -66,7 +66,7 @@ class OrdersController extends BaseController{
 		$vars['catalog'] = $this->db->rows("SELECT tb.id, tb.sub, tb2.name 
 											FROM catalog tb
 											
-											LEFT JOIN ".$this->key_lang."_catalog tb2
+											LEFT JOIN ".$this->key_lang_admin."_catalog tb2
 											ON tb.id=tb2.cat_id
 											
 								 			ORDER BY tb.sort ASC");
@@ -81,7 +81,7 @@ class OrdersController extends BaseController{
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('delivery'));
 		if($row)$vars['delivery'] = $this->db->rows("SELECT * FROM `delivery` tb1
 													 
-													 LEFT JOIN ".$this->key_lang."_delivery tb2
+													 LEFT JOIN ".$this->key_lang_admin."_delivery tb2
 													 ON tb1.id=tb2.delivery_id
 													 WHERE active=? ORDER  BY sort ASC", array(1));
 		
@@ -89,7 +89,7 @@ class OrdersController extends BaseController{
 		$row = $this->db->row("SELECT id FROM module WHERE `controller`=?", array('payment'));
 		if($row)$vars['payment'] = $this->db->rows("SELECT * FROM `payment` tb1 
 													
-													LEFT JOIN ".$this->key_lang."_payment tb2
+													LEFT JOIN ".$this->key_lang_admin."_payment tb2
 													ON tb1.id=tb2.payment_id
 													WHERE active=? ORDER  BY sort ASC", array(1));
 		$view = new View($this->registry);

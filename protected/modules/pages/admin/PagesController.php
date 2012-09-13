@@ -12,7 +12,7 @@ class PagesController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "pages";
 		$this->name = "Содержимое";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
+		$this->tb_lang = $this->key_lang_admin.'_'.$this->tb;
 		$this->registry = $registry;
 		//$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
 	}

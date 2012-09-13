@@ -12,7 +12,6 @@ class UsersController extends BaseController{
 		parent::__construct($registry, $params);
 		$this->tb = "users";
 		$this->name = "Пользователи";
-		$this->tb_lang = $this->key_lang.'_'.$this->tb;
 		$this->registry = $registry;
 	}
 
