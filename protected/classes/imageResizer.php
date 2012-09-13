@@ -1,4 +1,4 @@
-<?php
+<?php /////////
 define("JPG", 0);
 define("GIF", 1);
 define("PNG", 2);

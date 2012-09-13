@@ -1,6 +1,6 @@
 <?php
 /*
- * вывод каталога компаний и их данных
+ * Moderators edit
  */
 class ModeratorsController extends BaseController{
 	
@@ -204,7 +204,7 @@ class ModeratorsController extends BaseController{
 												moderators_type tb2
 											ON
 												tb.type_moderator =tb2.id
-                                         WHERE tb.id!=?
+                                         WHERE tb2.id!=?
 										 ORDER BY tb.`id` DESC",
         array(1));
         return $vars;
