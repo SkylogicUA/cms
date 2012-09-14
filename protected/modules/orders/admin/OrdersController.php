@@ -92,6 +92,7 @@ class OrdersController extends BaseController{
 													LEFT JOIN ".$this->key_lang_admin."_payment tb2
 													ON tb1.id=tb2.payment_id
 													WHERE active=? ORDER  BY sort ASC", array(1));
+		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");											
 		$view = new View($this->registry);
 		$data['content'] = $view->Render('edit.phtml', $vars);
 		return $this->Render($data);
@@ -246,7 +247,7 @@ class OrdersController extends BaseController{
         $start_page = 0;
         $cur_page = 0;
         $vars['paging'] = '';
-
+		
         if(isset($this->params['page']))
         {
             $cur_page = $this->params['page'];
@@ -269,6 +270,7 @@ class OrdersController extends BaseController{
         {
             $vars['paging'] = Paging::MakePaging($cur_page, $count, $size_page, $dir="admin_");//вызов шаблона для постраничной навигации
         }
+		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");
         $vars['list'] = $this->db->rows($sql);
 		return $vars;
 	}

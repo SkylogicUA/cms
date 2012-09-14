@@ -49,6 +49,7 @@ class ProductController extends BaseController{
 		elseif(isset($_POST['update_close']))$vars['message'] = $this->save();
 		elseif(isset($_POST['add_close']))$vars['message'] = $this->add();
 		
+		
 		$view = new View($this->registry);
 		$vars['list'] = $view->Render('view.phtml', $this->listView());
 		$vars['status'] = $this->db->rows("SELECT *, comment as name FROM `product_status` ORDER  BY id ASC");
@@ -512,6 +513,7 @@ class ProductController extends BaseController{
         {
             $vars['paging'] = Paging::MakePaging($cur_page, $count, $size_page, $dir="admin_");//вызов шаблона для постраничной навигации
         }
+		$vars['currency'] = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");
         $vars['list'] = $this->db->rows($sql);
 		return $vars;
 	}

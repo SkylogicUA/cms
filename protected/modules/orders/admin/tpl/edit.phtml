@@ -32,7 +32,7 @@
                         </div>
 						<div class="form-field">
                             <label for="date_add">Сумма заказа:</label>
-                            <div><?=$vars['edit']['sum']?></div>
+                            <div><?=$vars['edit']['sum']?> (<?=$vars['currency']['icon']?></div>
                         </div>
 
                         <div class="form-field">
@@ -96,8 +96,7 @@
 									$price='';
 									if($row['price']!=0.00)
 									{
-										$price = viewPrice($row['price']);
-										$price=" +".$price['price'];
+										$price=" +".$row['price'].' ('.$vars['currency']['icon'].')';
 									}
 									echo'<option value="'.$row['id'].'"';if($row['id']==$vars['edit']['delivery'])echo' selected';echo'>'.$row['name'].' '.$price.'</option>';
 								}
@@ -168,7 +167,7 @@
 								<th>Товар</th>
 								<th width="10%">Кол-во</th>
 								<th width="10%">Скидка</th>
-								<th width="10%">Цена</th>
+								<th width="10%">Цена (<?=$vars['currency']['icon']?>)</th>
 								<th width="10%">Сумма</th>
 								<th width="10%">&nbsp;</th>
 							</tr>

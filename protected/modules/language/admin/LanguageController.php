@@ -67,82 +67,80 @@ class LanguageController extends BaseController{
 	private function add()
 	{
 		$message=''; 
-		 
 		if(isset($_POST['comment'],$_POST['language']))
 		{
-            	 
-				try
-				{
-						  $this->db->beginTransaction();  // start Transaction 
-						  $rollBack='';
-							
-						  $param = array($_POST['comment'],$_POST['language'],'domen'.$_POST['language']);  
-						  $insert_id=$this->db->insert_id("INSERT INTO `".$this->tb."` SET `comment`=?,`language`=?,`domen`=?", $param);	if(!$insert_id) $rollBack.='ok'; 
-								           
-						  $language_default=$this->db->cell("Select `language`  FROM `".$this->tb."` WHERE `default`=?", array(1)) ; 
-					   
-						  $Tables=$this->db->rows('show tables');
-						  $mass =array();
-						  sort($Tables);
-						   
-						  
-						  $db_name  =$this->registry['db_settings']["name"];  
-						 
-						  $array=$Tables;
-						  $filtered_array = array_filter($array, 
-						  			function ($element ) use ($language_default) 
-										{ 
-										 
-											$mm =explode('_',$element[key($element)]);
-											return ($mm[0] == $language_default);
-										}
-									); 
+			try
+			{
+				$this->db->beginTransaction();  // start Transaction 
+				$rollBack='';
 				
-							foreach($filtered_array as $ky => $val)
-							{ 
-								$nTablDef = $val["Tables_in_{$db_name}"]; // имя текущщей таблицы
-								$nTablNew = str_replace($language_default."_",$_POST['language'].'_',$val["Tables_in_{$db_name}"]); // имя новой таблицы
-								$CreatTablDef = $this->db->row("SHOW CREATE TABLE `{$nTablDef}` " ); // структура текк. таблицы 
-								 
-								$patterns = array();
-								$patterns[] = '/'.$nTablDef.'/';
-								$patterns[] = '/CONSTRAINT(.*)FOREIGN KEY/Uis'; 
-								 
-								$replacements = array();
-								$replacements[] = ''.$nTablNew.'';
-								$replacements[] = 'CONSTRAINT `FK_'.$nTablNew.time().'`FOREIGN KEY ';
-								
-								$CreatTabl_new=preg_replace($patterns, $replacements, $CreatTablDef["Create Table"]); // структура Новой таблицы
-								$query=$this->db->query($CreatTabl_new); if(!$query) $rollBack.='ok';
-								
-								$COLUMNS=$this->db->rows("SHOW  COLUMNS FROM `$nTablDef` ");
-								$COLUMNS=arrayKeys($COLUMNS,'Field') ;	
-								$SqlINSERT="INSERT INTO `$nTablNew` (`".implode('`,`',array_keys($COLUMNS) )."`) 
-												SELECT `".implode('`,`',array_keys($COLUMNS) )."` FROM `$nTablDef`;";
-								$query=$this->db->query($SqlINSERT);   if(!$query) $rollBack.='ok'; 
-								
-							}	
+				$param = array($_POST['comment'],$_POST['language'],'domen'.$_POST['language']);  
+				$insert_id=$this->db->insert_id("INSERT INTO `".$this->tb."` SET `comment`=?,`language`=?,`domen`=?", $param);
+				if(!$insert_id)$rollBack.='ok'; 
+							   
+				$language_default=$this->db->cell("Select `language`  FROM `".$this->tb."` WHERE `default`=?", array(1)); 
+				
+				$Tables=$this->db->rows('show tables');
+				$mass =array();
+				sort($Tables);
+				
+				
+				$db_name  =$this->registry['db_settings']["name"];  
+				
+				$array=$Tables;
+				$filtered_array = array_filter($array, 
+												function ($element ) use ($language_default) 
+													{ 
+													 
+														$mm =explode('_',$element[key($element)]);
+														return ($mm[0] == $language_default);
+													}
+												); 
+				
+				foreach($filtered_array as $ky => $val)
+				{ 
+					$nTablDef = $val["Tables_in_{$db_name}"]; // имя текущщей таблицы
+					$nTablNew = str_replace($language_default."_",$_POST['language'].'_',$val["Tables_in_{$db_name}"]); // имя новой таблицы
+					$CreatTablDef = $this->db->row("SHOW CREATE TABLE `{$nTablDef}` " ); // структура текк. таблицы 
+					 
+					$patterns = array();
+					$patterns[] = '/'.$nTablDef.'/';
+					$patterns[] = '/CONSTRAINT(.*)FOREIGN KEY/Uis'; 
+					 
+					$replacements = array();
+					$replacements[] = ''.$nTablNew.'';
+					$replacements[] = 'CONSTRAINT `FK_'.$nTablNew.time().'`FOREIGN KEY ';
 					
-							if($rollBack == 'ok')
-							{ 
-								$this->db->rollBack(); // отмена всех add
-								$message.= messageAdmin('При добавление произошли ошибки', 'error');
-							}
-							else
-								{
-									$this->db->commit();   // save Transaction
-									$message.= messageAdmin('Данные успешно добавлены'); 
-								}
-				} 
-                catch(PDOException $e) 
-					{
-                    	$this->db->rollBack();// отмена всех add
-                        $message.= messageAdmin('При добавление произошли ошибки', 'error');	
-					}
+					$CreatTabl_new=preg_replace($patterns, $replacements, $CreatTablDef["Create Table"]); // структура Новой таблицы
+					$query=$this->db->query($CreatTabl_new); if(!$query) $rollBack.='ok';
+					
+					$COLUMNS=$this->db->rows("SHOW  COLUMNS FROM `$nTablDef` ");
+					$COLUMNS=arrayKeys($COLUMNS,'Field') ;	
+					$SqlINSERT="INSERT INTO `$nTablNew` (`".implode('`,`',array_keys($COLUMNS) )."`) 
+									SELECT `".implode('`,`',array_keys($COLUMNS) )."` FROM `$nTablDef`;";
+					$query=$this->db->query($SqlINSERT);   if(!$query) $rollBack.='ok'; 
+					
+				}	
+				
+				if($rollBack == 'ok')
+				{ 
+					$this->db->rollBack(); // отмена всех add
+					$message.= messageAdmin('При добавление произошли ошибки', 'error');
+				}
+				else
+				{
+					$this->db->commit();   // save Transaction
+					$message.= messageAdmin('Данные успешно добавлены'); 
+				}
+			} 
+			catch(PDOException $e) 
+			{
+				$this->db->rollBack();// отмена всех add
+				$message.= messageAdmin('При добавление произошли ошибки', 'error');	
+			}
 		}
  		return $message;
 	}
-
 	 
 	private function save()
 	{
@@ -178,7 +176,8 @@ class LanguageController extends BaseController{
 		
 		if(isset($this->registry['access']))
 			$message = $this->registry['access'];		
-	 	elseif($default<>1){
+	 	elseif($default<>1)
+		{
 			 if(isset($this->params['delete']) && $this->params['delete']>0)
 			 {
  				$key=$this->db->cell("Select `language`  FROM `".$this->tb."` WHERE `id`=?", array($id)) ;

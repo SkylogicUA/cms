@@ -8,48 +8,50 @@
 		}
 	}
 	
-function Select_masiv($mas, $name_select, $KEY=0,$style, $option_text='Выберете')
-{
-
-	$text="<select $style class=form_option name=\"$name_select\">";
+	function Select_masiv($mas, $name_select, $KEY=0,$style, $option_text='Выберете')
+	{
+		$text="<select $style class=form_option name=\"$name_select\">";
+		
+		if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+		
+		foreach ($mas as $key_t=>$value_t) 
+		{
+			if($KEY==$key_t) $sel='selected="selected"';
+			else $sel='';  				
+			$text=$text.'<option value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
+		}
+		$text=$text.'</select>';
+		
+		return $text;						   
+	}
 	
-	if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+	function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='Выберете')
+	{ 
 	
-				foreach ($mas as $key_t=>$value_t) 
-				{
-						if($KEY==$key_t) $sel='selected="selected"'; else $sel='';  				
-						$text=$text.'<option   value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
-				}
-	$text=$text.'</select>';
-	
-	return $text;						   
-}
-
-function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='Выберете')
-{ 
-
-	$text='Чтобы выбрать несколько позиций зажмите клавишу CTRL и кликайте машкой ан разделы<br />
-		<select name="'.$name_select.'"  '.$style.' size="10" multiple="multiple">';
-	if($option_text<>'')$text.="<option value=0 >$option_text</option>";
-				foreach ($mas as $key_t=>$value_t)
-				{
-						$sel='';
-						if(isset($ArKEY) and is_array($ArKEY)===true and count($ArKEY)>0)
-						{
-							 if( in_array($key_t,array_keys($ArKEY)) )
-								{$sel='selected="selected"';}	
-						} 
-						else if($key_t == $ArKEY)
-						{
-							$sel='selected="selected"';	
-						}	 
-									
-						$text=$text.'<option value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
-					}
-	$text=$text.'</select>';
-	
-	return $text;						   
-}
+		$text='Чтобы выбрать несколько позиций зажмите клавишу CTRL и кликайте машкой ан разделы<br />
+			<select name="'.$name_select.'"  '.$style.' size="10" multiple="multiple">';
+		if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+		foreach ($mas as $key_t=>$value_t)
+		{
+			$sel='';
+			if(isset($ArKEY) and is_array($ArKEY)===true and count($ArKEY)>0)
+			{
+				 if(in_array($key_t,array_keys($ArKEY)))
+				 {
+					 $sel='selected="selected"';
+				 }	
+			} 
+			else if($key_t == $ArKEY)
+			{
+				$sel='selected="selected"';	
+			}	 
+						
+			$text=$text.'<option value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
+		}
+		$text=$text.'</select>';
+		
+		return $text;						   
+	}
 
 	function createTree_cat($array, $currentParent, $KEY, $currLevel = 0, $prevLevel = -1) 
 	{
@@ -59,37 +61,37 @@ function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='В�
 		{
 			if ($currentParent == $category['sub']) 
 			{	
-					$sub = $category['sub'];
-					$level = $currLevel;
-	
-					if	($level == 0) 		$bull = '&nbsp;'; 
-					elseif ($level == 1) 	$bull = '&nbsp;&bull;&nbsp;'; 
-					elseif ($level == 2) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ordm;&nbsp;';
-					elseif ($level == 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-';
-					elseif ($level > 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; 
-					
-					if ($sub == 0) $class = " class = form_ac "; 
-					else $class = "";
-	
-					$select = "";	 
-	
-					if ($categoryId == $KEY)
-					{
-						$select = 'selected = "selected"';
-					}	
-	
-					$text .= "<option value=\"$categoryId\" $select $class > $bull". htmlspecialchars(stripslashes($category['name'])) ."</option>";
-	 
-					if ($currLevel > $prevLevel) 
-					{ 
-						$prevLevel = $currLevel; 
-					}
-	
-					$currLevel++; 
-	
-	
-					$text.=createTree_cat ($array, $categoryId, $KEY, $currLevel, $prevLevel);	
-					$currLevel--;	 		 	
+				$sub = $category['sub'];
+				$level = $currLevel;
+
+				if	($level == 0) 		$bull = '&nbsp;'; 
+				elseif ($level == 1) 	$bull = '&nbsp;&bull;&nbsp;'; 
+				elseif ($level == 2) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ordm;&nbsp;';
+				elseif ($level == 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-';
+				elseif ($level > 3) 	$bull = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; 
+				
+				if ($sub == 0) $class = " class = form_ac "; 
+				else $class = "";
+
+				$select = "";	 
+
+				if ($categoryId == $KEY)
+				{
+					$select = 'selected = "selected"';
+				}	
+
+				$text .= "<option value=\"$categoryId\" $select $class > $bull". htmlspecialchars(stripslashes($category['name'])) ."</option>";
+ 
+				if ($currLevel > $prevLevel) 
+				{ 
+					$prevLevel = $currLevel; 
+				}
+
+				$currLevel++; 
+
+
+				$text.=createTree_cat ($array, $categoryId, $KEY, $currLevel, $prevLevel);	
+				$currLevel--;	 		 	
 			}	
 		}
 		return $text;
@@ -155,7 +157,7 @@ function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='В�
 	{
 		//$return=array();
 		$discount=$discount/100;
-		return round($sum-$sum*$discount,2);
+		return round($sum-$sum*$discount, 2);
 	}
 		
 	function getUri($languages)
@@ -166,10 +168,9 @@ function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='В�
 		if((isset($value_lang[1])&&($value_lang[1]!='ajaxadmin'&&$value_lang[1]!='ajax'&&$value_lang[1]!='admin'&&$value_lang[1]!='js'&&$value_lang[1]!='server'&&$value_lang[1]!='captcha'))||!isset($_SESSION['key_lang']))
 		{
 			$_SESSION['key_lang']='ru';
-			
 		}
 		
-		if(isset($value_lang[2])&&$value_lang[2]!="admin")
+		if(!isset($value_lang[2])||(isset($value_lang[2])&&$value_lang[2]!="admin"))
 		foreach($languages as $row)
 		{
 			if(isset($value_lang[1])&&$value_lang[1]==$row['language'])

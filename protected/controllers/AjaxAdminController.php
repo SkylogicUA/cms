@@ -89,39 +89,10 @@ class AjaxAdminController extends BaseController{
 											  WHERE product_id=?
 											  ORDER BY sort ASC",
 			array($_REQUEST['id']));
-			?>
-			<tr class="noDrop">
-				<th width="25"></th>
-				<th width="20" class="center"><input type="checkbox" class="check_all2" title="Отметить/снять все" value="Y" name="check_all"></th>
-				<th width="20">ID</th>
-				<th width="50">Фото</th>
-				<th>Название</th>
-				<th width="100">Статус</th>
-				<th width="80">&nbsp;</th>
-				</tr>
-				<?php
-				$dir=createDir($_REQUEST['id']);
-				foreach($res as $row)
-				{
-					if($row['active']==1)$active='<div class="selected-status status-a"><a> Вкл. </a></div>';
-					else $active='<div class="selected-status status-d"><a> Выкл. </a></div>';
-	
-					echo'<tr id="sort'.$row['id'].'">
-									<td class="move"></td>
-									<td class="center"><input type="checkbox" class="check-item" value="'.$row['id'].'" name="photo_id[]" /></td>
-									<td><span>'.$row['id'].'</span></td>
-									<td><img src="/'.$dir['1'].$row['id'].'_s.jpg" alt="" width="50" /></td>
-									<td><input type="text" value="'.$row['name'].'" name="photo_name[]" class="input-text"></td>
-									<td><input type="hidden" value="'.$row['id'].'" name="save_photo_id[]" />
-										<div class="select-popup-container active_status" id="active'.$row['id'].'">'.$active.' </div>
-									</td>
-									<td width="10%">
-										<ul class="cm-tools-list tools-list">
-											<li><a href="/admin/product/edit/'.$row['product_id'].'/delete/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
-										</ul>
-									</td>
-								</tr>';
-				}
+			
+			$this->registry->set('admin', 'product');
+			$view = new View($this->registry);
+			echo $view->Render('photoproduct.phtml', array('photo'=>$res, 'id'=>$_REQUEST['id']));
 		}
     }
 	
@@ -175,9 +146,12 @@ class AjaxAdminController extends BaseController{
 			}
 			
 			if ($msg)
-				{ $stringData = "Error: ".$_FILES['Filedata']['error']." Error Info: ".$msg; }
-			else
-				{ $stringData = "1"; } // This is required for onComplete to fire on Mac OSX
+			{
+				$stringData = "Error: ".$_FILES['Filedata']['error']." Error Info: ".$msg;
+			}
+			else{//This is required for onComplete to fire on Mac OSX
+				$stringData = "1";
+			}
 			echo $stringData;
 			//$targetFile =  str_replace('//','/',$targetPath) . $_FILES['Filedata']['name'];
 			//echo str_replace($_SERVER['DOCUMENT_ROOT'],'',$targetFile);
@@ -224,38 +198,9 @@ class AjaxAdminController extends BaseController{
 											  WHERE photos_id=?
 											  ORDER BY sort ASC",
 				array($_REQUEST['id']));
-			?>
-				<tr class="noDrop">
-					<th width="25"></th>
-					<th width="1%" class="center"><input type="checkbox" class="check_all2" title="Отметить/снять все" value="Y" name="check_all"></th>
-					<th width="2%">ID</th>
-					<th width="50">Фото</th>
-					<th>Название</th>
-					<th width="20%">Статус</th>
-					<th width="15%">&nbsp;</th>
-				</tr>
-		<?php
-			foreach($res as $row)
-			{
-				if($row['active']==1)$active='<div class="selected-status status-a"><a> Вкл. </a></div>';
-				else $active='<div class="selected-status status-d"><a> Выкл. </a></div>';
-	
-				echo'<tr id="sort'.$row['id'].'">
-									<td class="move"></td>
-									<td class="center"><input type="checkbox" class="check-item" value="'.$row['id'].'" name="photo_id[]" /></td>
-									<td><span>'.$row['id'].'</span></td>
-									<td><img src="/files/photos/'.$row['photos_id'].'/'.$row['id'].'_s.jpg" alt="" width="50" /></td>
-									<td><input type="text" value="'.$row['name'].'" name="photo_name[]" class="input-text"></td>
-									<td><input type="hidden" value="'.$row['id'].'" name="save_photo_id[]" />
-										<div class="select-popup-container active_status" id="active'.$row['id'].'">'.$active.' </div>
-									</td>
-									<td width="10%">
-										<ul class="cm-tools-list tools-list">
-											<li><a href="/admin/photos/edit/'.$row['photos_id'].'/delete/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
-										</ul>
-									</td>
-								</tr>';
-			}
+			$this->registry->set('admin', 'photos');
+			$view = new View($this->registry);
+			echo $view->Render('photos.phtml', array('photo'=>$res));	
 		}
     }
 	
@@ -385,17 +330,17 @@ class AjaxAdminController extends BaseController{
                 tb.*,
                 tb2.name
 				
-             FROM product tb
-
-				LEFT JOIN ".$this->key_lang."_product tb2
-                ON tb2.product_id=tb.id
-
-                LEFT JOIN product_catalog tb3
-                ON tb3.product_id=tb.id
-
-             WHERE tb.active='1' AND tb3.catalog_id=?
-			 GROUP BY tb.id
-             ORDER BY tb.`sort` ASC, tb.id DESC";//echo $q;
+				 FROM product tb
+	
+					LEFT JOIN ".$this->key_lang."_product tb2
+					ON tb2.product_id=tb.id
+	
+					LEFT JOIN product_catalog tb3
+					ON tb3.product_id=tb.id
+	
+				 WHERE tb.active='1' AND tb3.catalog_id=?
+				 GROUP BY tb.id
+				 ORDER BY tb.`sort` ASC, tb.id DESC";//echo $q;
 			$res = $this->db->rows($q, array($_POST['id']));
 			if(count($res)!=0)
 			{
@@ -414,6 +359,8 @@ class AjaxAdminController extends BaseController{
     {
 		if(isset($_POST['id'],$_POST['order_id']))
 		{
+			
+			
 			$row = $this->db->row("SELECT tb.*, tb2.name 
 								   FROM product tb
 								   
@@ -422,38 +369,11 @@ class AjaxAdminController extends BaseController{
 								   
 								   WHERE tb.`id`='{$_POST['id']}'");
 			
-			$row2 = $this->db->row("SELECT id FROM orders_product WHERE orders_id=? AND product_id=?", array($_POST['order_id'], $_POST['id']));					   
-			if(!$row2)$this->db->query("INSERT INTO orders_product SET orders_id=?, name=?, price=?, discount=?, amount=?, `sum`=?, `product_id`=?", array($_POST['order_id'], $row['name'], $row['price'], $row['discount'], 1, $row['price'], $_POST['id']));
+			$row2 = $this->db->row("SELECT id FROM orders_product WHERE orders_id=? AND product_id=?", array($_POST['order_id'], $_POST['id']));	
+			$param = array($_POST['order_id'], $row['name'], $row['price'], $row['discount'], 1, $row['price'], $_POST['id']);		   
+			if(!$row2)$this->db->query("INSERT INTO orders_product SET orders_id=?, name=?, price=?, discount=?, amount=?, `sum`=?, `product_id`=?", $param);
 			else $this->db->query("UPDATE orders_product SET amount=amount+1, `sum`=`sum`*amount WHERE id=?", array($row2['id']));
-			$res = $this->db->rows("SELECT * FROM orders_product WHERE orders_id=?", array($_POST['order_id']));	
-			$data=array();
-			$data['content']='
-				<tr>
-					<th width="50">ID</th>
-					<th>Товар</th>
-					<th width="10%">Кол-во</th>
-					<th width="10%">Скидка</th>
-					<th width="10%">Цена</th>
-					<th width="10%">Сумма</th>
-					<th width="5%">&nbsp;</th>
-				</tr>';
-			foreach($res as $row)
-			{
-				$data['content'].='<tr>
-						<td><span>'.$row['product_id'].'</span></td>
-						<td><input type="text" name="name[]" value="'.$row['name'].'" size="40" /></td>
-						<td><input type="text" name="amount[]" value="'.$row['amount'].'" size="3" style="text-align:center;" /></td>
-						<td><input type="text" name="discount[]" value="'.$row['discount'].'" size="3" style="text-align:center;" /> %</td>
-						<td><input type="text" name="price[]" value="'.$row['price'].'" size="10" /></td>
-						<td>'.$row['sum'].'</td>
-						<td width="10%">
-							<input type="hidden" name="product_id[]" value="'.$row['id'].'" />
-							<ul class="cm-tools-list tools-list">
-								<li><a href="/admin/orders/edit/'.$_POST['order_id'].'/delete/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
-							</ul>
-						</td>
-					</tr>';
-			}
+			
 			$total=0;
 			$res = $this->db->rows("SELECT * FROM orders_product WHERE orders_id=?", array($_POST['order_id']));
 			foreach($res as $row)
@@ -462,44 +382,18 @@ class AjaxAdminController extends BaseController{
 				$total+=$sum;
 				
 			}	
+			
+			$res = $this->db->rows("SELECT * FROM orders_product WHERE orders_id=?", array($_POST['order_id']));
+			
+			$this->registry->set('admin', 'orders');
+			$view = new View($this->registry);
+			$currency = $this->db->row("SELECT icon FROM currency WHERE `base`='1'");
+			$data=array();
+			$data['content']=$view->Render('orderproduct.phtml', array('product'=>$res, 'total'=>$total, 'currency'=>$currency));
+			
 			$this->db->query("UPDATE `orders` SET `amount`=?, `sum`=? WHERE `id`=?", array(count($res)-1, $total, $_POST['order_id']));
 			//$data['amount'] = count($res)-1;
 			$data['total'] = 'Итого: '.$total;
-			return json_encode($data);
-		}
-    }
-	
-	
-	
-	function addpriceAction()
-    {
-		if(isset($_POST['id']))
-		{
-			$data=array();
-			$this->db->query("INSERT INTO price SET product_id=?", array($_POST['id']));
-			$res = $this->db->rows("SELECT * FROM price WHERE product_id=? ORDER BY id DESC", array($_POST['id']));	
-			
-			$data['content']='
-				<tr class="noDrop">
-					<th>Цена</th>
-					<th>Порция</th>
-					<th>&nbsp;</th>
-				</tr>';
-			foreach($res as $row)
-			{
-				$data['content'].='<tr>
-						<td><input type="text" name="price_price[]" value="'.$row['price'].'"  style="width:100px;" /></td>
-						<td><input type="text" name="price_name[]" value="'.$row['weight'].'"  style="width:100px;" /></td>
-						
-						<td width="10%">
-							<input type="hidden" name="product_id[]" value="'.$row['id'].'" />
-							<ul class="cm-tools-list tools-list">
-								<li><a href="/admin/product/edit/'.$_POST['id'].'/delprice/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
-							</ul>
-						</td>
-					</tr>';
-			}
-			
 			return json_encode($data);
 		}
     }
