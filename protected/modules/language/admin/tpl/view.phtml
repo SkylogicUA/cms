@@ -5,26 +5,29 @@
  		<th width="2%">ID</th>
 		<th>Название</th>
 		<th width="15%">KEY</th>
+        <th width="15%">Default</th>
 		<th width="5%">&nbsp;</th>
 	</tr>
 	<?php
 		foreach($vars['list'] as $row)
 		{
-			 
-			
-           echo'<tr id="sort'.$row['id'].'">
+			 ?>
+             <tr id="sort <?=$row['id']?>">
 					<td class="move"></td>
-                     <td><span>'.$row['id'].'</span><input type="hidden" value="'.$row['id'].'" name="save_id[]" /></td>
-                    <td><input type="text" value="'.$row['comment'].'" name="comment[]" class="input-text"></td>
+                     <td><span><?=$row['id']?></span><input type="hidden" value="<?=$row['id']?>" name="save_id[]" /></td>
+                    <td><input type="text" value="<?=$row['comment']?>" name="comment[]" class="input-text"></td>
 					<td>
-						 '.$row['language'].'
+						 <?=$row['language'];?>
+					</td>
+					<td>
+						 <input name="default[]" <?=$row['default']==1?'checked="checked"':''?> value="<?=$row['id']?>"  type="radio"/>
 					</td>
                     <td width="10%">
                         <ul class="cm-tools-list tools-list">
-                            <li><a href="/admin/'.$vars['action'].'/delete/'.$row['id'].'" class="cm-confirm">Удалить</a></li>
+                            <li><a href="/admin/<?=$vars['action'];?>/delete/<?=$row['id'];?>" class="cm-confirm">Удалить</a></li>
                         </ul>
                     </td>
-                </tr>';
+                </tr><?
 		}
 	?>
 </table>

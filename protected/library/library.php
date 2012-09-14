@@ -8,8 +8,50 @@
 		}
 	}
 	
+function Select_masiv($mas, $name_select, $KEY=0,$style, $option_text='Выберете')
+{
 
-	function createTree_cat($array, $currentParent, $text_grupa, $currLevel = 0, $prevLevel = -1) 
+	$text="<select $style class=form_option name=\"$name_select\">";
+	
+	if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+	
+				foreach ($mas as $key_t=>$value_t) 
+				{
+						if($KEY==$key_t) $sel='selected="selected"'; else $sel='';  				
+						$text=$text.'<option   value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
+				}
+	$text=$text.'</select>';
+	
+	return $text;						   
+}
+
+function Select_masiv_multi($mas,$name_select,$ArKEY=0,$style, $option_text='Выберете')
+{ 
+
+	$text='Чтобы выбрать несколько позиций зажмите клавишу CTRL и кликайте машкой ан разделы<br />
+		<select name="'.$name_select.'"  '.$style.' size="10" multiple="multiple">';
+	if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+				foreach ($mas as $key_t=>$value_t)
+				{
+						$sel='';
+						if(isset($ArKEY) and is_array($ArKEY)===true and count($ArKEY)>0)
+						{
+							 if( in_array($key_t,array_keys($ArKEY)) )
+								{$sel='selected="selected"';}	
+						} 
+						else if($key_t == $ArKEY)
+						{
+							$sel='selected="selected"';	
+						}	 
+									
+						$text=$text.'<option value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
+					}
+	$text=$text.'</select>';
+	
+	return $text;						   
+}
+
+	function createTree_cat($array, $currentParent, $KEY, $currLevel = 0, $prevLevel = -1) 
 	{
 		
 		$text='';
@@ -31,7 +73,7 @@
 	
 					$select = "";	 
 	
-					if ($categoryId == $text_grupa)
+					if ($categoryId == $KEY)
 					{
 						$select = 'selected = "selected"';
 					}	
@@ -46,7 +88,7 @@
 					$currLevel++; 
 	
 	
-					$text.=createTree_cat ($array, $categoryId, $text_grupa, $currLevel, $prevLevel);	
+					$text.=createTree_cat ($array, $categoryId, $KEY, $currLevel, $prevLevel);	
 					$currLevel--;	 		 	
 			}	
 		}
