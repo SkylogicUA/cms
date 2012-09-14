@@ -12,13 +12,13 @@
 	{
 		$text="<select $style class=form_option name=\"$name_select\">";
 		
-		if($option_text<>'')$text.="<option value=0 >$option_text</option>";
+		if($option_text<>'')$text.="<option value='0'>$option_text</option>";
 		
 		foreach ($mas as $key_t=>$value_t) 
 		{
-			if($KEY==$key_t) $sel='selected="selected"';
+			if($KEY==$key_t)$sel='selected="selected"';
 			else $sel='';  				
-			$text=$text.'<option value="'.$key_t.'" '.$sel.' >'.$value_t.'</option>';
+			$text=$text.'<option value="'.$key_t.'" '.$sel.'>'.$value_t.'</option>';
 		}
 		$text=$text.'</select>';
 		

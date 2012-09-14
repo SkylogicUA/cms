@@ -26,7 +26,7 @@ class LanguageController extends BaseController{
 		if(isset($this->params['delete'])||isset($_POST['delete']))$vars['message'] = $this->delete();
 		elseif(isset($_POST['update']))$vars['message'] = $this->save();
 		elseif(isset($_POST['update_close']))$vars['message'] = $this->save();
-		//elseif(isset($_POST['add_close']))$vars['message'] = $this->add();
+		elseif(isset($_POST['add_close']))$vars['message'] = $this->add();
 
 		$view = new View($this->registry);
 		$vars['list'] = $view->Render('view.phtml', $this->listView());
@@ -66,8 +66,8 @@ class LanguageController extends BaseController{
 
 	private function add()
 	{
-		$message=''; 
-		if(isset($_POST['comment'],$_POST['language']))
+		$message='';
+		if(isset($_POST['comment'],$_POST['language'])&&$_POST['comment']!=''&&$_POST['language']!='0')
 		{
 			try
 			{
@@ -136,9 +136,10 @@ class LanguageController extends BaseController{
 			catch(PDOException $e) 
 			{
 				$this->db->rollBack();// отмена всех add
-				$message.= messageAdmin('При добавление произошли ошибки', 'error');	
+				$message.= messageAdmin('При добавление произошли ошибки!', 'error');	
 			}
 		}
+		else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
  		return $message;
 	}
 	 
