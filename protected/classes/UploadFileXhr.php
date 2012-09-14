@@ -8,7 +8,7 @@ class UploadFileXhr{
 		$uploaddir = $_SESSION['path'];
 
 		while ($data = fread($input, 1024)){			
-			fwrite($fp,$data);
+			fwrite($fp, $data);
 		}
 		
 		fclose($fp);
@@ -20,7 +20,8 @@ class UploadFileXhr{
 		$pref = "";
 		$uploaddir = $_SESSION['path'];
 
-		while ($data = fread($input, 1024)){			
+		while ($data = fread($input, 1024))
+		{			
 			fwrite($fp2,$data);
 		}
 		fclose($fp2);

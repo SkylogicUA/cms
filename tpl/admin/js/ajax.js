@@ -12,8 +12,9 @@ $(document).ready(function(){
 	$('.active_status').live('click',function()
 	{
 		var tb=$("#action").val();
+		var tb2=$("#action2").val();
 		var id=$(this).attr('id');
-		var dataString = 'id='+id+'&tb='+tb;
+		var dataString = 'id='+id+'&tb='+tb+'&tb2='+tb2;
 		$.ajax({type:"POST",url:"/ajaxadmin/active",dataType:'json', data:dataString,cache:false,success:
 		function(data)
 		{
@@ -87,7 +88,8 @@ $(document).ready(function(){
 function sortA()
 {
 	var tb=$("#action").val();
+	var tb2=$("#action2").val();
 	var arr=$(".tb_sort").tableDnDSerialize();
-	var dataString = 'arr='+arr+'&tb='+tb;//alert(dataString);
+	var dataString = 'arr='+arr+'&tb='+tb+'&tb2='+tb2;//alert(dataString);
 	$.ajax({type: "POST",url: "/ajaxadmin/sort",dataType:'json',data: dataString,cache: false,success:function(data){$('#message').html(data.message);autoHide();}});
 }

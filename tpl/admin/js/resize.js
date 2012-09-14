@@ -19,7 +19,7 @@ function createUploader(width, height, path)
 			var img = new Image();
 			var position = [ 10, 10, 110, 110 ];
 			img.src = "/"+path+"/" + fileName;
-			$(img).ready(function(){//alert(id);
+			$(img).ready(function(){//alert(path);
 
 				//alert('widht:'+img.width+'; height:'+img.height+'');
 				var time=new Date(); //alert(fileName);

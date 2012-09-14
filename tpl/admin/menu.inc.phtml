@@ -2,9 +2,9 @@
 	<div id="header">
 		<div id="logo"> <a href="/" target="_blank">Перейти на сайт</a><a title="Перейти в магазин" target="_blank" class="view-storefront-icon" href="../">&nbsp;</a> </div>
 		<div id="top_quick_links">
-			<div class="nowrap"><a href="/admin/manager"><span>
-				<? //$_SESSION['admin']['login'];?>
-				</span></a><span title="выйти" class="top-signout"> <a class="text-link" href="/admin/logout">&nbsp;</a> </span> </div>
+			<div class="nowrap"><span>
+				<?=$_SESSION['admin']['login'];?>
+				</span><span title="выйти" class="top-signout"> <a class="text-link" href="/admin/logout">&nbsp;</a> </span> </div>
 		</div>
 		<div id="top_menu">
 			<ul id="alt_menu">

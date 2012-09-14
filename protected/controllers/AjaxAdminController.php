@@ -27,11 +27,12 @@ class AjaxAdminController extends BaseController{
 			$data=array();
 			$data['message'] ='';			
 			if(!$this->checkAccess('edit', $tb))$data['message'] = messageAdmin('Отказано в доступе', 'error');
-
+			
+			if($_POST['tb2']!='undefined')$tb=$_POST['tb2'];
 			if($data['message']=='')
 			{
 				$_POST['id']=str_replace("active", "", $_POST['id']);
-				$tb=$_POST['tb'];
+				//$tb=$_POST['tb'];
 				$row=$this->db->row("SELECT `active` FROM `$tb` WHERE `id`=?", array($_POST['id']));
 				if($row['active']==1)
 				{
@@ -59,10 +60,9 @@ class AjaxAdminController extends BaseController{
 			$data=array();
 			$data['message'] ='';			
 			if(!$this->checkAccess('edit', $tb))$data['message'] = messageAdmin('Отказано в доступе', 'error');
-
+			if($_POST['tb2']!='undefined')$tb=$_POST['tb2'];
 			if($data['message']=='')
 			{
-				$tb=$_POST['tb'];
 				$_POST['arr']=str_replace("sort", "", $_POST['arr']);
 				preg_match_all("/=(\d+)/",$_POST['arr'],$a);//echo var_dump($a);
 				foreach($a[1] as $pos=>$id)
@@ -329,52 +329,50 @@ class AjaxAdminController extends BaseController{
 	////Create small Photo
     function includephotoAction()
 	{ 
-		copy($_SERVER['DOCUMENT_ROOT']."/files/default.jpg", $_SERVER['DOCUMENT_ROOT'].'/files/product/defaul2t.jpg');
+		//$this->db->query("UPDATE language SET domen='4' WHERE id='2'");
+		//copy("files/default.jpg", 'files/defaul2t.jpg');
 		$result = $this->handleUpload($_SESSION['tovar_write']);
 	}
 	
 	
 	function handleUpload($id_foto)
-	{
-		$pref = ""; //var_info($_SESSION['path']);
-		$uploaddir = $_SESSION['path'];
-	 
-		$maxFileSize = 100 * 1024 * 1024;
-		
-		//var_dump($_FILES['qqfile']);
-		//var_dump($_GET['qqfile']);
-		
-		if(isset($_GET['qqfile']))
-		{
-			$file = new UploadFileXhr();
-		}
-		elseif(isset($_FILES['qqfile']))
-		{
-			copy($_SERVER['DOCUMENT_ROOT']."/files/default.jpg", $_SERVER['DOCUMENT_ROOT'].'/files/product/defaul2t.jpg');
-			$file = new UploadFileForm();
-		} 
-		else{
-			return array(success=>false);
-		}
-	 
-		$pathinfo = pathinfo($file->getName());
-		$filename = $pathinfo['filename'];			
-		$ext = $pathinfo['extension'];
-		//var_dump($pathinfo);var_dump($ext);var_dump($filename);
-				
-		while(file_exists($pref . $uploaddir . $filename . '.' . $ext))
-		{
-			$local_data=date("Y_m_d_h_i_s");
-			$filename .= rand(10, 99);
-		}	
-		$filename2 = $id_foto.'_b' . '.jpg';
-		//$file->save($pref . $uploaddir . $filename . '.' . $ext);
-		$file->save($pref . $uploaddir . $filename2, $pref . $uploaddir .$id_foto.'.jpg');
-		
-		//Copyright($pref . $uploaddir .$id_foto.'.jpg');
-		//copy( $pref.$uploaddir.$filename2, $pref.$uploaddir.$filename2);
-		return  array("success"=>true);
-	}
+    {
+        $pref = "";  
+        $uploaddir = $_SESSION['path'];
+     	
+		//copy($_SERVER['DOCUMENT_ROOT']."/files/default.jpg", $_SERVER['DOCUMENT_ROOT'].'/files/defaul2t.jpg');
+        $maxFileSize = 100 * 1024 * 1024; 
+        //var_info($_GET['qqfile']);
+        if(isset($_GET['qqfile']))
+        {
+            $file = new UploadFileXhr();
+        }
+        elseif(isset($_FILES['qqfile']))
+        {
+             $file = new UploadFileForm();
+        } 
+        else{
+            return array('success'=>false);
+        }
+     
+        $pathinfo = pathinfo($file->getName()); 
+        $filename = $pathinfo['filename'];            
+        $ext = $pathinfo['extension'];
+         
+        while(file_exists($pref . $uploaddir . $filename . '.' . $ext))
+        {
+            $local_dataate("Y_m_d_h_i_s");
+            $filename .= rand(10, 99);
+        }    
+        
+        $filename2 = $id_foto.'_b' . '.'.$ext;
+        //$file->save($pref . $uploaddir . $filename . '.' . $ext);
+		//echo $pref . $uploaddir . $filename2." - -".$pref . $uploaddir .$id_foto.'.jpg';
+        $file->save($pref.$uploaddir.$filename2, $pref.$uploaddir.$id_foto.'.jpg');
+    
+        //copy( $pref.$uploaddir.$filename2, $pref.$uploaddir.$filename2);
+        return  array("success"=>true);
+    }
 	
 	
 	function orderProductAction()

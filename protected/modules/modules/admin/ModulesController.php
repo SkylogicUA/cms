@@ -12,12 +12,43 @@ class ModulesController extends BaseController{
 		parent::__construct($registry, $params);
         $this->tb = "module";
         $this->name = "Управление модулями";
+		$this->separator="@@@";
+		$this->separator2="@@";
         $this->registry = $registry;
         //$this->db->row("SELECT FROM `moderators_permission` WHERE `id`=?", array($_SESSION['admin']['id']));
     }
 
     public function indexAction()
     {
+		/*$dir="protected/modules/article/admin/data/db.sql";
+		$handle = fopen("protected/modules/article/admin/data/db.sql", "r");
+        $string = fread($handle, filesize($dir));
+        fclose($handle);
+
+		$string = explode($this->separator, $string);
+		preg_match('^@@(.*)\@@^', $string[1], $match);
+		$tb=$match[1];
+		$match2 = explode('_', $tb);
+		//echo $string[0]. "\n"; 
+		$this->db->query($string[0]);
+		foreach($this->language as $lang)
+		{
+			$tb=$lang['language']."_".$match2[1];
+			$q=str_replace('@@'.$match[1].'@@', $tb,$string[1]);
+			$this->db->query($q);
+			if(isset($string[2]))
+			{
+				$key_sql='ALTER TABLE '.$tb.'
+ADD FOREIGN KEY ('.$match2[1].'_id)
+REFERENCES '.$match2[1].'(id)
+ ON UPDATE CASCADE ON DELETE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;';	
+				//echo $key_sql;
+				$this->db->query($key_sql);
+			}
+		}*/
+		
+		
         $vars['message'] = '';
         $vars['name'] = $this->name;
         if(isset($this->registry['access']))$vars['message'] = $this->registry['access'];
@@ -67,7 +98,7 @@ class ModulesController extends BaseController{
         $vars['dir']=get_directory_list(MODULES);
         $vars['modules'] = $this->db->rows("SELECT *, m.comment as name
                                             FROM `moderators_type` m
-
+											WHERE m.id!='1'
                                             ORDER BY m.id ASC");
         $vars['list'] = $this->listView();
         $vars['menu'] = $this->db->rows("SELECT * FROM `menu_admin` ORDER BY id ASC");
@@ -89,24 +120,28 @@ class ModulesController extends BaseController{
                 $handle = fopen($dir, "r");
                 $contents = fread($handle, filesize($dir));
                 fclose($handle);//echo($contents);
-                $this->db->query($contents);
-            }
-
-            ////Добавляем таблицы связку полей, если есть db_key.sql
-            $dir=MODULES.$_POST['module']."/admin/data/db_key.sql";//echo $dir;
-            if(file_exists($dir))
-            {
-                $handle = fopen($dir, "r");
-                $contents = fread($handle, filesize($dir));
-                fclose($handle);
-               if($contents!='')
-			   {
-				   $contents = explode('#@@#', $contents);
-				   foreach($contents as $row)
-				   {
-						$this->db->query($row);
-				   }
-			   }
+				$string = explode($this->separator, $contents);
+				preg_match('^@@(.*)\@@^', $string[1], $match);
+				$tb=$match[1];
+				$match2 = explode('_', $tb);
+				//echo $string[0]. "\n"; 
+				$this->db->query($string[0]);
+				foreach($this->language as $lang)
+				{
+					$tb=$lang['language']."_".$match2[1];
+					$q=str_replace('@@'.$match[1].'@@', $tb,$string[1]);
+					$this->db->query($q);
+					if(isset($string[2]))
+					{
+						$key_sql='ALTER TABLE '.$tb.'
+		ADD FOREIGN KEY ('.$match2[1].'_id)
+		REFERENCES '.$match2[1].'(id)
+		 ON UPDATE CASCADE ON DELETE CASCADE;
+		SET FOREIGN_KEY_CHECKS=1;';	
+						//echo $key_sql;
+						$this->db->query($key_sql);
+					}
+				}
             }
 
 			$param = array($_POST['name'], $_POST['module'], $_POST['comment'], $_POST['tables'], $_POST['sub']);
@@ -239,11 +274,12 @@ class ModulesController extends BaseController{
 
                     if($row&&$row['tables']!="")
                     {
-                        foreach(explode(",", $row['tables']) as $row2)
-                        {
-                            //echo $row2.'<br />';
-                            $this->db->query("DROP TABLE IF EXISTS `".$row2."`");
-                        }
+						foreach($this->language as $lang)
+						{
+							$tb=$lang['language']."_".$row['tables'];
+							$this->db->query("DROP TABLE IF EXISTS `".$tb."`");
+						}
+						$this->db->query("DROP TABLE IF EXISTS `".$row['tables']."`");
                     }
 					$dir="files/{$row['controller']}/";
 					if($row['controller']!=''&&is_dir($dir))removeDir($dir);
@@ -257,13 +293,14 @@ class ModulesController extends BaseController{
                 $row= $this->db->row("SELECT tables, controller FROM `".$this->tb."` WHERE id=?", array($id));
 
                 if($row&&$row['tables']!="")
-                {
-                    foreach(explode(",", $row['tables']) as $row2)
-                    {
-                        //echo $row2.'<br />';
-                        $this->db->query("DROP TABLE IF EXISTS `".$row2."`");
-                    }
-                }
+				{
+					foreach($this->language as $lang)
+					{
+						$tb=$lang['language']."_".$row['tables'];
+						$this->db->query("DROP TABLE IF EXISTS `".$tb."`");
+					}
+					$this->db->query("DROP TABLE IF EXISTS `".$row['tables']."`");
+				}
 				$dir="files/{$row['controller']}/";
 				if(is_dir($dir))removeDir($dir);
                 $this->db->query("DELETE FROM `moderators_permission` WHERE `module_id`=?", array($id));

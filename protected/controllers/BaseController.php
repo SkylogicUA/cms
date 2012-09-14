@@ -449,7 +449,7 @@ class BaseController{
 							   
 							   WHERE mmm.controller=? AND mm.id=?", array($module, $_SESSION['admin']['id']));
 							   
-		if($row['permission']==000)return Loader::act('error');			   
+		if($row['permission']==000)return false;
 		elseif($action=='delete'&&($row['permission']!=500&&$row['permission']!=300&&$row['permission']!=700&&$row['permission']!=800))
 		{
 			return false;
