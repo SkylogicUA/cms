@@ -43,13 +43,16 @@ class LanguageController extends BaseController{
 			
 		$view = new View($this->registry);
 		$vars['Language']=array();
-		$Language =scandir(getcwd().'/tpl/admin/images/flags/');
+		$dir=getcwd().'/tpl/admin/images/flags/';
+		$Language =scandir($dir);
 		
 		sort($Language ); 
 		$default = $this->db->rows_key("Select `language`,`language`  FROM `".$this->tb."`    " ) ; 
 		foreach($Language as $ky=>$val)
 		{
-			if($val<>'..' and $val<>'.')
+			$fileParts  = pathinfo($dir.$val );
+			 
+			if($val<>'..' and $val<>'.'  and $fileParts["extension"]=='png' ) 
 			{
 				$index=substr($val,0,-4); 
 				if( !in_array($index, array_keys($default))) 
