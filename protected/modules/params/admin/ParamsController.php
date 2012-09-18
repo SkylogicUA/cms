@@ -95,12 +95,18 @@ class ParamsController extends BaseController{
 		$message='';
 		if(isset($_POST['name'], $_POST['sub'], $_POST['url']))
 		{
-			if($_POST['sub']==0)$_POST['sub']=NULL;
-            $param = array($_POST['url'], $_POST['sub']);
-            $insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `url`=?, `sub`=?", $param);
+			if($_POST['url']=='')$url = translit($_POST['name']);
+			else $url = translit($_POST['url']);
 			
-			$param = array($_POST['name'], $insert_id);
-			$this->db->query("INSERT INTO `".$this->tb_lang."` SET `name`=?, `params_id`=?", $param);
+			if($_POST['sub']==0)$_POST['sub']=NULL;
+            $param = array($_POST['url'], $_POST['sub'], $_POST['active']);
+            $insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET `url`=?, `sub`=?, active=?", $param);
+			$message = $this->checkUrl($this->tb, $url, $insert_id);
+			foreach($this->language as $lang)
+			{
+				$tb=$lang['language']."_".$this->tb;
+				$this->db->query("INSERT INTO `".$tb."` SET `name`=?, `info`=?, `params_id`=?", array($_POST['name'], $_POST['body'], $insert_id));
+			}
 			$message.= messageAdmin('Данные успешно добавлены');
 		}
 		//else $message.= messageAdmin('При добавление произошли ошибки', 'error');	
@@ -135,7 +141,8 @@ class ParamsController extends BaseController{
 
                     if($_POST['sub']==0)$sub = NULL;
                     else $sub = $_POST['sub'];
-
+					
+					$message = $this->checkUrl($this->tb, $url, $_POST['id']);
 					$param = array($_POST['active'], $sub, $url, $_POST['id']);
 					$this->db->query("UPDATE `".$this->tb."` SET `active`=?, sub=?, url=? WHERE id=?", $param);
 					

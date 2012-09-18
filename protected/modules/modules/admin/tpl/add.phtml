@@ -66,7 +66,8 @@
                             <tr>
                                 <th>Название модуля</th>
                                 <th style="text-align:center;" width="80">Чтение</th>
-                                <th style="text-align:center;" width="140">Изменение/Удаление</th>
+                                <th style="text-align:center;" width="80">Изменение</th>
+                                <th style="text-align:center;" width="80">Удаление</th>
                                 <th style="text-align:center;" width="80">Добавление</th>
                             </tr>
                             <?php
@@ -76,6 +77,7 @@
                                 echo'<tr>
                                         <td>'.$row['name'].'<input type="hidden" value="'.$row['id'].'" name="module_id[]" /></td>
                                         <td style="text-align:center;"><input type="checkbox" value="'.$row['id'].'" name="read'.$row['id'].'" id="read'.$row['id'].'" class="read_chmod" /></td>
+										<td style="text-align:center;"><input type="checkbox" value="'.$row['id'].'" name="edit'.$row['id'].'" id="edit'.$row['id'].'" class="edit_chmod" /></td>
                                         <td style="text-align:center;"><input type="checkbox" value="'.$row['id'].'" name="del'.$row['id'].'" id="del'.$row['id'].'" class="del_chmod" /></td>
                                         <td style="text-align:center;"><input type="checkbox" value="'.$row['id'].'" name="add'.$row['id'].'" id="add'.$row['id'].'" class="add_chmod" /></td>
                                     </tr>';
@@ -83,6 +85,7 @@
                             echo'<tr>
                                         <td></td>
                                         <td style="text-align:center;"><input type="checkbox" value="" id="read_all" /></td>
+										<td style="text-align:center;"><input type="checkbox" value="" id="edit_all" /></td>
                                         <td style="text-align:center;"><input type="checkbox" value="" id="del_all" /></td>
                                         <td style="text-align:center;"><input type="checkbox" value="" id="add_all" /></td>
                                     </tr>';

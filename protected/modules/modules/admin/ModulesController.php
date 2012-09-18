@@ -20,35 +20,6 @@ class ModulesController extends BaseController{
 
     public function indexAction()
     {
-		/*$dir="protected/modules/article/admin/data/db.sql";
-		$handle = fopen("protected/modules/article/admin/data/db.sql", "r");
-        $string = fread($handle, filesize($dir));
-        fclose($handle);
-
-		$string = explode($this->separator, $string);
-		preg_match('^@@(.*)\@@^', $string[1], $match);
-		$tb=$match[1];
-		$match2 = explode('_', $tb);
-		//echo $string[0]. "\n"; 
-		$this->db->query($string[0]);
-		foreach($this->language as $lang)
-		{
-			$tb=$lang['language']."_".$match2[1];
-			$q=str_replace('@@'.$match[1].'@@', $tb,$string[1]);
-			$this->db->query($q);
-			if(isset($string[2]))
-			{
-				$key_sql='ALTER TABLE '.$tb.'
-ADD FOREIGN KEY ('.$match2[1].'_id)
-REFERENCES '.$match2[1].'(id)
- ON UPDATE CASCADE ON DELETE CASCADE;
-SET FOREIGN_KEY_CHECKS=1;';	
-				//echo $key_sql;
-				$this->db->query($key_sql);
-			}
-		}*/
-		
-		
         $vars['message'] = '';
         $vars['name'] = $this->name;
         if(isset($this->registry['access']))$vars['message'] = $this->registry['access'];
@@ -121,29 +92,51 @@ SET FOREIGN_KEY_CHECKS=1;';
                 $contents = fread($handle, filesize($dir));
                 fclose($handle);//echo($contents);
 				$string = explode($this->separator, $contents);
-				preg_match('^@@(.*)\@@^', $string[1], $match);
-				$tb=$match[1];
-				$match2 = explode('_', $tb);
-				//echo $string[0]. "\n"; 
-				$this->db->query($string[0]);
-				foreach($this->language as $lang)
+				if(isset($string[1]))
 				{
-					$tb=$lang['language']."_".$match2[1];
-					$q=str_replace('@@'.$match[1].'@@', $tb,$string[1]);
-					$this->db->query($q);
-					if(isset($string[2]))
+					preg_match('^@@(.*)\@@^', $string[1], $match);
+					$tb=$match[1];
+					$match2 = explode('_', $tb);
+					//echo $string[0]. "\n"; 
+					$this->db->query($string[0]);
+					foreach($this->language as $lang)
 					{
-						$key_sql='ALTER TABLE '.$tb.'
-		ADD FOREIGN KEY ('.$match2[1].'_id)
-		REFERENCES '.$match2[1].'(id)
-		 ON UPDATE CASCADE ON DELETE CASCADE;
-		SET FOREIGN_KEY_CHECKS=1;';	
-						//echo $key_sql;
-						$this->db->query($key_sql);
+						$tb=$lang['language']."_".$match2[1];
+						$q=str_replace('@@'.$match[1].'@@', $tb,$string[1]);
+						$this->db->query($q);
+						if(isset($string[2]))
+						{
+							$key_sql='ALTER TABLE '.$tb.'
+										ADD FOREIGN KEY ('.$match2[1].'_id)
+										REFERENCES '.$match2[1].'(id)
+										 ON UPDATE CASCADE ON DELETE CASCADE;
+										SET FOREIGN_KEY_CHECKS=1;';	
+							//echo $key_sql;
+							$this->db->query($key_sql);
+						}
 					}
 				}
+				else{
+					$this->db->query($string[0]);
+				}
             }
-
+			
+			////Добавляем таблицы связку полей, если есть db_key.sql
+            $dir=MODULES.$_POST['module']."/admin/data/db_key.sql";//echo $dir;
+            if(file_exists($dir))
+            {
+                $handle = fopen($dir, "r");
+                $contents = fread($handle, filesize($dir));
+                fclose($handle);
+               if($contents!='')
+			   {
+				   $contents = explode('#@@#', $contents);
+				   foreach($contents as $row)
+				   {
+						$this->db->query($row);
+				   }
+			   }
+            }
 			$param = array($_POST['name'], $_POST['module'], $_POST['comment'], $_POST['tables'], $_POST['sub']);
             $insert_id = $this->db->insert_id("INSERT INTO `".$this->tb."` SET name=?, controller=?, comment=?, tables=?, sub=?", $param);
             
@@ -274,12 +267,17 @@ SET FOREIGN_KEY_CHECKS=1;';
 
                     if($row&&$row['tables']!="")
                     {
+						$table=explode(',',$row['tables']);
+						$cnt=count($table)-1;
 						foreach($this->language as $lang)
 						{
-							$tb=$lang['language']."_".$row['tables'];
+							$tb=$lang['language']."_".$table[$cnt];
 							$this->db->query("DROP TABLE IF EXISTS `".$tb."`");
 						}
-						$this->db->query("DROP TABLE IF EXISTS `".$row['tables']."`");
+						foreach(explode(",", $row['tables']) as $row2)
+                        {
+                            $this->db->query("DROP TABLE IF EXISTS `".$row2."`");
+                        }
                     }
 					$dir="files/{$row['controller']}/";
 					if($row['controller']!=''&&is_dir($dir))removeDir($dir);
@@ -294,12 +292,17 @@ SET FOREIGN_KEY_CHECKS=1;';
 
                 if($row&&$row['tables']!="")
 				{
+					$table=explode(',',$row['tables']);
+					$cnt=count($table)-1;
 					foreach($this->language as $lang)
 					{
-						$tb=$lang['language']."_".$row['tables'];
+						$tb=$lang['language']."_".$table[$cnt];
 						$this->db->query("DROP TABLE IF EXISTS `".$tb."`");
 					}
-					$this->db->query("DROP TABLE IF EXISTS `".$row['tables']."`");
+					foreach(explode(",", $row['tables']) as $row2)
+					{
+						$this->db->query("DROP TABLE IF EXISTS `".$row2."`");
+					}
 				}
 				$dir="files/{$row['controller']}/";
 				if(is_dir($dir))removeDir($dir);

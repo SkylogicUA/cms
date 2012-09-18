@@ -1,7 +1,7 @@
 <?php
 	if(isset($_POST['logout2']))unset($_SESSION['user_comments']);
 	if(isset($_POST['token']))
-	{
+	{echo'dddddddddddd';
 		$s = file_get_contents('http://ulogin.ru/token.php?token=' . $_POST['token'] . '&host=' . $_SERVER['HTTP_HOST']);
 		$user_data = json_decode($s, true);
 		if(!isset($user_data['error']))

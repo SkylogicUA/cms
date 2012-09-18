@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS `meta_data` (
   `active` enum('0','1') NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `url` (`url`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='TEXT RU:SEO оптимизация' AUTO_INCREMENT=3 ;
-
-CREATE TABLE IF NOT EXISTS `ru_meta_data` (
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='TEXT RU:SEO оптимизация' AUTO_INCREMENT=1 ;
+@@@
+CREATE TABLE IF NOT EXISTS `@@ru_meta_data@@` (
   `meta_id` int(11) NOT NULL,
   `title` varchar(100) DEFAULT NULL,
   `body` longtext,
@@ -15,3 +15,4 @@ CREATE TABLE IF NOT EXISTS `ru_meta_data` (
   `description` text,
   KEY `meta_id` (`meta_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='TEXT RU:SEO оптимизация';
+@@@1

@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS `news` (
   UNIQUE KEY `url` (`url`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
-
-CREATE TABLE IF NOT EXISTS `ru_news` (
+@@@
+CREATE TABLE IF NOT EXISTS `@@ru_news@@` (
   `news_id` int(11) DEFAULT NULL,
   `name` varchar(64) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -23,3 +23,4 @@ CREATE TABLE IF NOT EXISTS `ru_news` (
   `body_m` varchar(256) NOT NULL,
   `body` longtext
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+@@@1
